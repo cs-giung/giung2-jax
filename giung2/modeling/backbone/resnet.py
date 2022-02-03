@@ -23,7 +23,7 @@ class ProjectionShortcut(nn.Module):
                       kernel_size = 1,
                       stride      = self.stride,
                       padding     = 'SAME',)(x, **kwargs)
-
+        y = self.norm()(y, **kwargs)
         return y
 
 
@@ -63,18 +63,17 @@ class BasicBlock(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
-        y = self.norm()(x, **kwargs)
-        y = self.relu()(y, **kwargs)
         y = self.conv(channels    = self.channels,
                       kernel_size = 3,
                       stride      = self.stride,
-                      padding     = 'SAME',)(y, **kwargs)
+                      padding     = 'SAME',)(x, **kwargs)
         y = self.norm()(y, **kwargs)
         y = self.relu()(y, **kwargs)
         y = self.conv(channels    = self.channels * 1,
                       kernel_size = 3,
                       stride      = 1,
                       padding     = 'SAME',)(y, **kwargs)
+        y = self.norm()(y, **kwargs)
 
         if self.stride != 1 or x.shape[-1] != self.channels * 1:
             y = y + self.shortcut(channels  = self.channels,
@@ -86,6 +85,7 @@ class BasicBlock(nn.Module):
         else:
             y = y + x
 
+        y = self.relu()(y, **kwargs)
         return y
 
 
@@ -99,18 +99,17 @@ class ReZeroBasicBlock(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
-        y = self.norm()(x, **kwargs)
-        y = self.relu()(y, **kwargs)
         y = self.conv(channels    = self.channels,
                       kernel_size = 3,
                       stride      = self.stride,
-                      padding     = 'SAME',)(y, **kwargs)
+                      padding     = 'SAME',)(x, **kwargs)
         y = self.norm()(y, **kwargs)
         y = self.relu()(y, **kwargs)
         y = self.conv(channels    = self.channels * 1,
                       kernel_size = 3,
                       stride      = 1,
                       padding     = 'SAME',)(y, **kwargs)
+        y = self.norm()(y, **kwargs)
         
         a = jnp.asarray(self.param('a', jax.nn.initializers.zeros, (1,)), x.dtype)
         if self.stride != 1 or x.shape[-1] != self.channels * 1:
@@ -123,6 +122,7 @@ class ReZeroBasicBlock(nn.Module):
         else:
             y = a * y + x
 
+        y = self.relu()(y, **kwargs)
         return y
 
 
@@ -134,12 +134,12 @@ class LastBlock(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
-        y = self.norm()(x, **kwargs)
-        y = self.relu()(y, **kwargs)
-        return y
+        """for compatibility with PreResNet
+        """
+        return x
 
 
-class PreResNet(nn.Module):
+class ResNet(nn.Module):
     in_planes: int
     first_block: nn.Module
     block: nn.Module
@@ -186,7 +186,7 @@ class PreResNet(nn.Module):
         return y
 
 
-def build_preresnet_backbone(cfg: CfgNode):
+def build_resnet_backbone(cfg: CfgNode):
 
     _conv_layers = cfg.MODEL.BACKBONE.RESNET.CONV_LAYERS
     _norm_layers = cfg.MODEL.BACKBONE.RESNET.NORM_LAYERS
@@ -247,7 +247,7 @@ def build_preresnet_backbone(cfg: CfgNode):
     if _shortcut == 'ProjectionShortcut':
         shortcut = ProjectionShortcut
 
-    return PreResNet(
+    return ResNet(
         in_planes       = cfg.MODEL.BACKBONE.RESNET.IN_PLANES,
         first_block     = first_block,
         block           = block,

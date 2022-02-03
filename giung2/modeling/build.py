@@ -10,7 +10,9 @@ from giung2.modeling.classifier import *
 def build_backbone(cfg: CfgNode) -> nn.Module:
     name = cfg.MODEL.BACKBONE.NAME
 
-    if name == 'PreResNet':
+    if name == 'ResNet':
+        backbone = build_resnet_backbone(cfg)
+    elif name == 'PreResNet':
         backbone = build_preresnet_backbone(cfg)
 
     return backbone
