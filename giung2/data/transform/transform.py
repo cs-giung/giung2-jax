@@ -8,6 +8,7 @@ __all__ = [
     "Transform",
     "TransformChain",
     "ToTensorTransform",
+    "RandomUniformDequantizeTransform",
     "RandomHFlipTransform",
     "RandomCropTransform",
     "RandomResizedCropTransform",
@@ -44,6 +45,17 @@ class ToTensorTransform(Transform):
     
     def __call__(self, rng, image):
         return image / 255.0
+
+
+class RandomUniformDequantizeTransform(Transform):
+
+    def __init__(self):
+        """
+        Convert discrete [0, 255] to continuous [-0.5, 255.5].
+        """
+
+    def __call__(self, rng, image):
+        return image + jax.random.uniform(rng, image.shape, minval=-0.5, maxval=0.5)
 
 
 class RandomHFlipTransform(Transform):

@@ -12,25 +12,68 @@ from giung2.config import CfgNode
 from giung2.data.transform import *
 
 
-STANDARD_TRAIN_TRANSFORM = {
-    'MNIST': ToTensorTransform(),
-    'KMNIST': ToTensorTransform(),
-    'FashionMNIST': ToTensorTransform(),
-    "CIFAR10": TransformChain([
-        RandomCropTransform(size=32, padding=4),
-        RandomHFlipTransform(prob=0.5),
-        ToTensorTransform(),
-    ]),
-    "CIFAR100": TransformChain([
-        RandomCropTransform(size=32, padding=4),
-        RandomHFlipTransform(prob=0.5),
-        ToTensorTransform(),
-    ]),
-    "TinyImageNet200": TransformChain([
-        RandomCropTransform(size=64, padding=4),
-        RandomHFlipTransform(prob=0.5),
-        ToTensorTransform(),
-    ]),
+DATA_AUGMENTATION = {
+
+    'STANDARD': {
+        'MNIST': TransformChain([
+            ToTensorTransform(),
+        ]),
+        'KMNIST': TransformChain([
+            ToTensorTransform(),
+        ]),
+        'FashionMNIST': TransformChain([
+            ToTensorTransform(),
+        ]),
+        "CIFAR10": TransformChain([
+            RandomCropTransform(size=32, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            ToTensorTransform(),
+        ]),
+        "CIFAR100": TransformChain([
+            RandomCropTransform(size=32, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            ToTensorTransform(),
+        ]),
+        "TinyImageNet200": TransformChain([
+            RandomCropTransform(size=64, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            ToTensorTransform(),
+        ]),
+    },
+
+    'DEQUANTIZED_STANDARD': {
+        'MNIST': TransformChain([
+            RandomUniformDequantizeTransform(),
+            ToTensorTransform(),
+        ]),
+        'KMNIST': TransformChain([
+            RandomUniformDequantizeTransform(),
+            ToTensorTransform(),
+        ]),
+        'FashionMNIST': TransformChain([
+            RandomUniformDequantizeTransform(),
+            ToTensorTransform(),
+        ]),
+        "CIFAR10": TransformChain([
+            RandomCropTransform(size=32, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            RandomUniformDequantizeTransform(),
+            ToTensorTransform(),
+        ]),
+        "CIFAR100": TransformChain([
+            RandomCropTransform(size=32, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            RandomUniformDequantizeTransform(),
+            ToTensorTransform(),
+        ]),
+        "TinyImageNet200": TransformChain([
+            RandomCropTransform(size=64, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            RandomUniformDequantizeTransform(),
+            ToTensorTransform(),
+        ]),
+    },
+
 }
 
 
@@ -93,7 +136,7 @@ def build_datatloaders(
             batch_size      = trn_batch_size,
             steps_per_epoch = trn_steps_per_epoch,
             shuffle         = True,
-            transform       = jax.jit(jax.vmap(STANDARD_TRAIN_TRANSFORM[name])),
+            transform       = jax.jit(jax.vmap(DATA_AUGMENTATION[cfg.DATASETS.DATA_AUGMENTATION][name])),
         ),
         'trn_loader': functools.partial(
             _build_dataloader,
