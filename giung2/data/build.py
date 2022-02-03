@@ -13,6 +13,9 @@ from giung2.data.transform import *
 
 
 STANDARD_TRAIN_TRANSFORM = {
+    'MNIST': ToTensorTransform(),
+    'KMNIST': ToTensorTransform(),
+    'FashionMNIST': ToTensorTransform(),
     "CIFAR10": TransformChain([
         RandomCropTransform(size=32, padding=4),
         RandomHFlipTransform(prob=0.5),
@@ -37,17 +40,19 @@ def build_datatloaders(
     ) -> Dict[str, Iterable]:
     name = cfg.DATASETS.NAME
 
-    if name in ['CIFAR10', 'CIFAR100',]:
+    if name in ['MNIST', 'KMNIST', 'FashionMNIST',]:
+        indices = list(range(60000))
+        if cfg.DATASETS.MNIST.SHUFFLE_INDICES:
+            random.Random(cfg.DATASETS.SEED).shuffle(indices)
+        trn_indices = indices[cfg.DATASETS.MNIST.TRAIN_INDICES[0] : cfg.DATASETS.MNIST.TRAIN_INDICES[1]]
+        val_indices = indices[cfg.DATASETS.MNIST.VALID_INDICES[0] : cfg.DATASETS.MNIST.VALID_INDICES[1]]
+
+    elif name in ['CIFAR10', 'CIFAR100',]:
         indices = list(range(50000))
         if cfg.DATASETS.CIFAR.SHUFFLE_INDICES:
             random.Random(cfg.DATASETS.SEED).shuffle(indices)
         trn_indices = indices[cfg.DATASETS.CIFAR.TRAIN_INDICES[0] : cfg.DATASETS.CIFAR.TRAIN_INDICES[1]]
         val_indices = indices[cfg.DATASETS.CIFAR.VALID_INDICES[0] : cfg.DATASETS.CIFAR.VALID_INDICES[1]]
-
-        trn_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_images.npy'))
-        trn_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_labels.npy'))
-        tst_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_images.npy'))
-        tst_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_labels.npy'))
 
     elif name in ['TinyImageNet200',]:
         indices = list(range(100000))
@@ -56,10 +61,10 @@ def build_datatloaders(
         trn_indices = indices[cfg.DATASETS.TINY.TRAIN_INDICES[0] : cfg.DATASETS.TINY.TRAIN_INDICES[1]]
         val_indices = indices[cfg.DATASETS.TINY.VALID_INDICES[0] : cfg.DATASETS.TINY.VALID_INDICES[1]]
 
-        trn_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_images.npy'))
-        trn_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_labels.npy'))
-        tst_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_images.npy'))
-        tst_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_labels.npy'))
+    trn_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_images.npy'))
+    trn_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_labels.npy'))
+    tst_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_images.npy'))
+    tst_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_labels.npy'))
 
     # validation split
     val_images, val_labels = trn_images[val_indices], trn_labels[val_indices]
