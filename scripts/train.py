@@ -29,7 +29,7 @@ class TrainState(train_state.TrainState):
     batch_stats: Any = None
 
 
-def step_trn(state, batch, scheduler):
+def step_trn(state, batch, num_classes, scheduler):
 
     # define loss function
     def loss_fn(params):
@@ -43,7 +43,7 @@ def step_trn(state, batch, scheduler):
         )
 
         # loss_ce
-        target = onehot(batch['labels'], num_classes=10)
+        target = onehot(batch['labels'], num_classes=num_classes)
         loss_ce = jnp.mean(-jnp.sum(output * target, axis=-1))
 
         # loss_wd
@@ -79,7 +79,7 @@ def step_trn(state, batch, scheduler):
     return new_state, metrics
 
 
-def step_val(state, batch):
+def step_val(state, batch, num_classes):
     output = state.apply_fn(
         {
             'params': state.params,
@@ -88,7 +88,7 @@ def step_val(state, batch):
         }, batch['images'], mutable=False,
         use_running_average=True,
     )
-    target = onehot(batch['labels'], num_classes=10)
+    target = onehot(batch['labels'], num_classes=num_classes)
     metrics = {
         'acc1': jnp.mean(jnp.argmax(output, -1) == batch['labels']),
         'loss_ce': jnp.mean(-jnp.sum(output * target, axis=-1))
@@ -186,9 +186,17 @@ if __name__ == '__main__':
         var_dict = init({'params': key}, jnp.ones(im_shape, im_dtype))
         return var_dict
 
-    im_shape = (1, 32, 32, 3,)
+    if cfg.DATASETS.NAME in ['CIFAR10',]:
+        image_shape = (1, 32, 32, 3,)
+        num_classes = 10
+    elif cfg.DATASETS.NAME in ['CIFAR100',]:
+        image_shape = (1, 32, 32, 3,)
+        num_classes = 100
+    elif cfg.DATASETS.NAME in ['TinyImageNet200',]:
+        image_shape = (1, 64, 64, 3,)
+        num_classes = 200
     im_dtype = jnp.float32
-    var_dict = initialize_model(rng, model, im_shape, im_dtype)
+    var_dict = initialize_model(rng, model, image_shape, im_dtype)
 
     # build dataset
     dataloaders = build_datatloaders(cfg, batch_size=[args.batch_size, 100, 100])
@@ -225,12 +233,11 @@ if __name__ == '__main__':
         prefix      = 'ckpt_e',
         parallel    = True,
     )
-    print(state.step)
     epoch_offset = int(state.step) // trn_steps_per_epoch
 
     # train model
-    step_trn = jax.pmap(functools.partial(step_trn, scheduler=scheduler), axis_name='batch')
-    step_val = jax.pmap(step_val, axis_name='batch')
+    step_trn = jax.pmap(functools.partial(step_trn, num_classes=num_classes, scheduler=scheduler), axis_name='batch')
+    step_val = jax.pmap(functools.partial(step_val, num_classes=num_classes                     ), axis_name='batch')
     sync_batch_stats = jax.pmap(lambda x: jax.lax.pmean(x, 'x'), 'x')
 
     best_acc1 = 0.0
