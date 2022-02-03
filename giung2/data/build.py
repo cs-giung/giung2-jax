@@ -49,6 +49,18 @@ def build_datatloaders(
         tst_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_images.npy'))
         tst_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_labels.npy'))
 
+    elif name in ['TinyImageNet200',]:
+        indices = list(range(100000))
+        if cfg.DATASETS.TINY.SHUFFLE_INDICES:
+            random.Random(cfg.DATASETS.SEED).shuffle(indices)
+        trn_indices = indices[cfg.DATASETS.TINY.TRAIN_INDICES[0] : cfg.DATASETS.TINY.TRAIN_INDICES[1]]
+        val_indices = indices[cfg.DATASETS.TINY.VALID_INDICES[0] : cfg.DATASETS.TINY.VALID_INDICES[1]]
+
+        trn_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_images.npy'))
+        trn_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_labels.npy'))
+        tst_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_images.npy'))
+        tst_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_labels.npy'))
+
     # validation split
     val_images, val_labels = trn_images[val_indices], trn_labels[val_indices]
     trn_images, trn_labels = trn_images[trn_indices], trn_labels[trn_indices]
