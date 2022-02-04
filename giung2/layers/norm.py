@@ -54,7 +54,7 @@ class FilterResponseNorm2d(nn.Module):
     use_learnable_epsilon: bool = False
     w_init: Callable[[PRNGKey, Shape, Dtype], Array] = jax.nn.initializers.ones
     b_init: Callable[[PRNGKey, Shape, Dtype], Array] = jax.nn.initializers.zeros
-    e_init: Callable[[PRNGKey, Shape, Dtype], Array] = jax.nn.initializers.zeros
+    e_init: Callable[[PRNGKey, Shape, Dtype], Array] = lambda e1, e2: jnp.array([1e-4,]) # TODO: init const.
     t_init: Callable[[PRNGKey, Shape, Dtype], Array] = jax.nn.initializers.zeros
 
     @nn.compact
