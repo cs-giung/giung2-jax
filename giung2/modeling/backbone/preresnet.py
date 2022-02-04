@@ -22,7 +22,7 @@ class ProjectionShortcut(nn.Module):
         y = self.conv(self.channels * self.expansion,
                       kernel_size = 1,
                       stride      = self.stride,
-                      padding     = 'SAME',)(x, **kwargs)
+                      padding     = 0,)(x, **kwargs)
 
         return y
 
@@ -68,13 +68,13 @@ class BasicBlock(nn.Module):
         y = self.conv(channels    = self.channels,
                       kernel_size = 3,
                       stride      = self.stride,
-                      padding     = 'SAME',)(y, **kwargs)
+                      padding     = 1,)(y, **kwargs)
         y = self.norm()(y, **kwargs)
         y = self.relu()(y, **kwargs)
         y = self.conv(channels    = self.channels * 1,
                       kernel_size = 3,
                       stride      = 1,
-                      padding     = 'SAME',)(y, **kwargs)
+                      padding     = 1,)(y, **kwargs)
 
         if self.stride != 1 or x.shape[-1] != self.channels * 1:
             y = y + self.shortcut(channels  = self.channels,
@@ -104,13 +104,13 @@ class ReZeroBasicBlock(nn.Module):
         y = self.conv(channels    = self.channels,
                       kernel_size = 3,
                       stride      = self.stride,
-                      padding     = 'SAME',)(y, **kwargs)
+                      padding     = 1,)(y, **kwargs)
         y = self.norm()(y, **kwargs)
         y = self.relu()(y, **kwargs)
         y = self.conv(channels    = self.channels * 1,
                       kernel_size = 3,
                       stride      = 1,
-                      padding     = 'SAME',)(y, **kwargs)
+                      padding     = 1,)(y, **kwargs)
         
         a = jnp.asarray(self.param('a', jax.nn.initializers.zeros, (1,)), x.dtype)
         if self.stride != 1 or x.shape[-1] != self.channels * 1:

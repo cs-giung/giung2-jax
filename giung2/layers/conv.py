@@ -29,9 +29,12 @@ class Conv2d(nn.Module):
     def __call__(self, x, **kwargs):
         in_channels = x.shape[-1]
         w_shape = (self.kernel_size, self.kernel_size, in_channels // self.num_groups, self.channels,)
+        padding = self.padding if isinstance(self.padding, str) else [
+            (self.padding, self.padding,), (self.padding, self.padding,),
+        ]
         w = jnp.asarray(self.param('w', self.w_init, w_shape), x.dtype)
         y = jax.lax.conv_general_dilated(
-            x, w, (self.stride, self.stride,), self.padding,
+            x, w, (self.stride, self.stride,), padding,
             lhs_dilation=(1,1,), rhs_dilation=(1,1,),
             dimension_numbers   = jax.lax.ConvDimensionNumbers((0,3,1,2,), (3,2,0,1,), (0,3,1,2,)),
             feature_group_count = self.num_groups,
