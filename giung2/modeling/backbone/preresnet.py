@@ -126,6 +126,48 @@ class ReZeroBasicBlock(nn.Module):
         return y
 
 
+class BottleneckBlock(nn.Module):
+    channels: int
+    stride: int
+    shortcut: nn.Module
+    conv: nn.Module
+    norm: nn.Module
+    relu: nn.Module
+
+    @nn.compact
+    def __call__(self, x, **kwargs):
+        y = self.norm()(x, **kwargs)
+        y = self.relu()(y, **kwargs)
+        y = self.conv(channels    = self.channels,
+                      kernel_size = 1,
+                      stride      = 1,
+                      padding     = 0,)(y, **kwargs)
+        y = self.norm()(y, **kwargs)
+        y = self.relu()(y, **kwargs)
+        y = self.conv(channels    = self.channels,
+                      kernel_size = 3,
+                      stride      = self.stride,
+                      padding     = 1,)(y, **kwargs)
+        y = self.norm()(y, **kwargs)
+        y = self.relu()(y, **kwargs)
+        y = self.conv(channels    = self.channels * 4,
+                      kernel_size = 1,
+                      stride      = 1,
+                      padding     = 0,)(y, **kwargs)
+
+        if self.stride != 1 or x.shape[-1] != self.channels * 4:
+            y = y + self.shortcut(channels  = self.channels,
+                                  stride    = self.stride,
+                                  expansion = 4,
+                                  conv      = self.conv,
+                                  norm      = self.norm,
+                                  relu      = self.relu,)(x, **kwargs)
+        else:
+            y = y + x
+
+        return y
+
+
 class LastBlock(nn.Module):
     channels: int
     conv: nn.Module
@@ -242,6 +284,9 @@ def build_preresnet_backbone(cfg: CfgNode):
     elif _block == 'ReZeroBasicBlock':
         block = ReZeroBasicBlock
         block_expansion = 1
+    elif _block == 'BottleneckBlock':
+        block = BottleneckBlock
+        block_expansion = 4
 
     _shortcut = cfg.MODEL.BACKBONE.RESNET.SHORTCUT
     if _shortcut == 'ProjectionShortcut':
