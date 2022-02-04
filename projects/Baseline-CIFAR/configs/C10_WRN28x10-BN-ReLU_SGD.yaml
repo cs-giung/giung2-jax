@@ -1,0 +1,38 @@
+DATASETS:
+  NAME: "CIFAR10"
+  # SEED: 42 (unused)
+  DATA_AUGMENTATION: "STANDARD"
+  CIFAR:
+    SHUFFLE_INDICES: False
+    TRAIN_INDICES: [0, 45000,]
+    VALID_INDICES: [45000, 50000,]
+
+MODEL:
+  META_ARCHITECTURE:
+    NAME: "ImageClassificationModelBase"
+  PIXEL_MEAN: [0.4915, 0.4821, 0.4464,]
+  PIXEL_STD: [0.2472, 0.2437, 0.2617,]
+  BACKBONE:
+    NAME: "PreResNet"
+    RESNET:
+      IN_PLANES: 16
+      FIRST_BLOCK:
+        USE_NORM_LAYER: False
+        USE_ACTIVATION: False
+        USE_POOL_LAYER: False
+        CONV_KSP: [3, 1, 1,]
+        # POOL_KSP: [3, 2, 1,] (unused)
+      BLOCK: "BasicBlock"
+      SHORTCUT: "ProjectionShortcut"
+      NUM_BLOCKS: [4, 4, 4,]
+      WIDEN_FACTOR: 10
+      CONV_LAYERS: "Conv2d"
+      NORM_LAYERS: "BatchNorm2d"
+      ACTIVATIONS: "ReLU"
+  CLASSIFIER:
+    NAME: "SoftmaxClassifier"
+    SOFTMAX_CLASSIFIER:
+      NUM_CLASSES: 10
+      NUM_HEADS: 1
+      USE_BIAS: True
+      LINEAR_LAYERS: "Linear"
