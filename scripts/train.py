@@ -268,7 +268,8 @@ if __name__ == '__main__':
         )
 
         # synchronize batch statitics across replicas
-        state = state.replace(batch_stats=sync_batch_stats(state.batch_stats))
+        if state.batch_stats:
+            state = state.replace(batch_stats=sync_batch_stats(state.batch_stats))
 
         # save checkpoint from the first replica
         if args.keep_every_n_checkpoints and jax.process_index() == 0:
