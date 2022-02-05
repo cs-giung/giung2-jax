@@ -16,6 +16,11 @@ python scripts/train.py \
     --batch_size 128 --learning_rate 0.1 --weight_decay 5e-4 \
     --seed 42 --output_dir ./outputs/C10_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
 ```
+```
+python scripts/eval.py \
+    --config_file ./configs/C10_{NETWORK_NAME}_SGD.yaml \
+    --weight_file ./outputs/C10_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
+```
 
 As a result, we get the following:
 | Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  | Train Runtime        |
@@ -38,6 +43,11 @@ python scripts/train.py \
     --num_epochs 200 --num_warmup_epochs 5 \
     --batch_size 128 --learning_rate 0.1 --weight_decay 5e-4 \
     --seed 42 --output_dir ./outputs/C100_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
+```
+```
+python scripts/eval.py \
+    --config_file ./configs/C100_{NETWORK_NAME}_SGD.yaml \
+    --weight_file ./outputs/C100_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
 ```
 
 As a result, we get the following:

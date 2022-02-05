@@ -194,6 +194,7 @@ if __name__ == '__main__':
         num_classes = 100
     else:
         raise NotImplementedError
+
     im_dtype = jnp.float32
     var_dict = initialize_model(rng, model, image_shape, im_dtype)
 
