@@ -9,6 +9,25 @@ from giung2.layers import *
 from giung2.layers.norm import FilterResponseNorm2d
 
 
+class IdentityShortcut(nn.Module):
+    channels: int
+    stride: int
+    expansion: int
+    conv: nn.Module
+    norm: nn.Module
+    relu: nn.Module
+
+    @nn.compact
+    def __call__(self, x, **kwargs):
+        pad_offset = self.expansion * self.channels - x.shape[-1]
+        return jnp.pad(
+            array           = x[:, ::2, ::2, :],
+            pad_width       = ((0, 0), (0, 0), (0, 0), (0, pad_offset)),
+            mode            = 'constant',
+            constant_values = 0,
+        )
+
+
 class ProjectionShortcut(nn.Module):
     channels: int
     stride: int
@@ -289,7 +308,9 @@ def build_preresnet_backbone(cfg: CfgNode):
         block_expansion = 4
 
     _shortcut = cfg.MODEL.BACKBONE.RESNET.SHORTCUT
-    if _shortcut == 'ProjectionShortcut':
+    if _shortcut == 'IdentityShortcut':
+        shortcut = IdentityShortcut
+    elif _shortcut == 'ProjectionShortcut':
         shortcut = ProjectionShortcut
 
     return PreResNet(
