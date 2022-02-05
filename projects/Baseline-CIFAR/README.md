@@ -19,7 +19,7 @@ python scripts/train.py \
 ```
 python scripts/eval.py \
     --config_file ./configs/C10_{NETWORK_NAME}_SGD.yaml \
-    --weight_file ./outputs/C10_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
+    --weight_file ./outputs/C10_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/best_acc1
 ```
 
 As a result, we get the following:
@@ -47,7 +47,7 @@ python scripts/train.py \
 ```
 python scripts/eval.py \
     --config_file ./configs/C100_{NETWORK_NAME}_SGD.yaml \
-    --weight_file ./outputs/C100_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
+    --weight_file ./outputs/C100_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/best_acc1
 ```
 
 As a result, we get the following:
