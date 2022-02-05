@@ -11,25 +11,24 @@ In summary,
 Run the following command lines:
 ```
 python scripts/train.py \
-    --config_file ./configs/TIN200_R18-BN-ReLU_SGD.yaml \
+    --config_file ./configs/TIN200_{NETWORK_NAME}_SGD.yaml \
     --num_epochs 100 --num_warmup_epochs 5 \
     --batch_size 128 --learning_rate 0.1 --weight_decay 5e-4 \
-    --seed 42 --output_dir ./outputs/TIN200_R18-BN-ReLU/SGD/s42_e100_wd5e-4/
+    --seed 42 --output_dir ./outputs/TIN200_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/
 ```
 ```
-python scripts/train.py \
-    --config_file ./configs/TIN200_R50-BN-ReLU_SGD.yaml \
-    --num_epochs 100 --num_warmup_epochs 5 \
-    --batch_size 128 --learning_rate 0.1 --weight_decay 5e-4 \
-    --seed 42 --output_dir ./outputs/TIN200_R50-BN-ReLU/SGD/s42_e100_wd5e-4/
+python scripts/eval.py \
+    --config_file ./configs/TIN200_{NETWORK_NAME}_SGD.yaml \
+    --weight_file ./outputs/TIN200_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/best_acc1
 ```
 
 As a result, we get the following:
-| Network      | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  | Train Runtime        |
-| :-           | :-:                    | :-:                    | :-:                    | :-:                  |
-| R18-BN-ReLU  | 99.98 / 0.007 / 0.016  | 65.71 / 1.477 / 1.458  | 65.47 / 1.516 / 1.491  | 1.0 hrs. (2 RTX3090) |
-| R50-BN-ReLU  | 99.98 / 0.004 / 0.008  | 69.64 / 1.314 / 1.300  | 68.99 / 1.348 / 1.331  | 3.5 hrs. (2 RTX3090) |
-| R18-FRN-SiLU | 99.95 / 0.032 / 0.057  | 63.62 / 1.575 / 1.560  | 63.48 / 1.589 / 1.574  | 1.0 hrs. (2 RTX3090) |
+| Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  | Train Runtime        | Misc. |
+| :-               | :-:                    | :-:                    | :-:                    | :-:                  | :-:   |
+| R18-BN-ReLU      | 99.98 / 0.007 / 0.018  | 65.84 / 1.488 / 1.464  | 65.44 / 1.529 / 1.499  | 1.1 hrs. (2 RTX3090) | [log](./scripts/logs/TIN200/20220205132411.log) |
+|                  | 99.98 / 0.006 / 0.018  | 66.48 / 1.480 / 1.439  | 65.51 / 1.547 / 1.495  | 0.8 hrs. (4 RTX3090) | [log](./scripts/logs/TIN200/20220205121009.log) |
+| R50-BN-ReLU      | 99.98 / 0.004 / 0.009  | 69.53 / 1.299 / 1.288  | 69.16 / 1.342 / 1.327  | 3.5 hrs. (2 RTX3090) | [log](./scripts/logs/TIN200/20220205132437.log) |
+|                  | 99.98 / 0.003 / 0.010  | 70.10 / 1.309 / 1.276  | 69.22 / 1.353 / 1.315  | 2.2 hrs. (4 RTX3090) | [log](./scripts/logs/TIN200/20220205120813.log) |
 
 ## ImageNet
 
