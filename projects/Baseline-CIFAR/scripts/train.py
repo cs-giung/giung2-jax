@@ -93,6 +93,7 @@ def step_val(state, batch, num_classes):
         'acc1': jnp.mean(jnp.argmax(output, -1) == batch['labels']),
         'loss_ce': jnp.mean(-jnp.sum(output * target, axis=-1))
     }
+    metrics = jax.lax.pmean(metrics, axis_name='batch')
     return metrics
 
 
