@@ -21,7 +21,7 @@ from tensorflow.io import gfile
 
 from giung2.config import get_cfg
 from giung2.modeling.build import build_model
-from giung2.data.build import build_datatloaders
+from giung2.data.build import build_dataloaders
 
 
 class TrainState(train_state.TrainState):
@@ -200,7 +200,7 @@ if __name__ == '__main__':
     var_dict = initialize_model(rng, model, image_shape, im_dtype)
 
     # build dataset
-    dataloaders = build_datatloaders(cfg, batch_size=[args.batch_size, 100, 100])
+    dataloaders = build_dataloaders(cfg, batch_size=[args.batch_size, 100, 100])
     trn_steps_per_epoch = dataloaders['trn_steps_per_epoch']
 
     # build optimizer

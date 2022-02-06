@@ -77,7 +77,7 @@ DATA_AUGMENTATION = {
 }
 
 
-def build_datatloaders(
+def build_dataloaders(
         cfg: CfgNode,
         batch_size: Union[int, Iterable[int]],
     ) -> Dict[str, Iterable]:

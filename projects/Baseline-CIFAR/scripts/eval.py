@@ -14,7 +14,7 @@ from flax.training import checkpoints
 from flax.training.common_utils import onehot
 
 from giung2.config import get_cfg
-from giung2.data.build import build_datatloaders
+from giung2.data.build import build_dataloaders
 from giung2.modeling.build import build_model
 
 
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     var_dict = initialize_model(rng, model, image_shape, im_dtype)
 
     # build dataset
-    dataloaders = build_datatloaders(cfg, batch_size=args.batch_size)
+    dataloaders = build_dataloaders(cfg, batch_size=args.batch_size)
 
     # load pre-trained weights
     ckpt = checkpoints.restore_checkpoint(args.weight_file, target=None)
