@@ -5,3 +5,5 @@
 /CIFAR100
 /TinyImageNet200
 /ImageNet1k
+/ImageNet1k_x32
+/ImageNet1k_x64

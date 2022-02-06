@@ -53,8 +53,18 @@ wget https://www.dropbox.com/s/wra2ol0rzq4twjh/CIFAR100.tar.gz
 tar -xvzf CIFAR100.tar.gz
 ```
 
-### [TinyImageNet200]
+### TinyImageNet200
 ```
 wget --load-cookies ~/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies ~/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1rRlczcdt8XHP62hb155s30zMqHuwglep' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1rRlczcdt8XHP62hb155s30zMqHuwglep" -O TinyImageNet200.tar.gz && rm -rf ~/cookies.txt
 tar -xvzf TinyImageNet200.tar.gz
+```
+
+### ImageNet1k_x32
+```
+(TBD)
+```
+
+### ImageNet1k_x64
+```
+(TBD)
 ```
