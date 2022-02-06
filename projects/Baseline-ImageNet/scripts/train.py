@@ -102,7 +102,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_file', default=None, required=True, metavar='FILE',
                         help='path to config file')
-    parser.add_argument('--num_epochs', default=200, type=int,
+    parser.add_argument('--num_epochs', default=100, type=int,
                         help='number of epochs for training')
     parser.add_argument('--num_warmup_epochs', default=5, type=int,
                         help='number of initial epochs for learning rate warm-up')
