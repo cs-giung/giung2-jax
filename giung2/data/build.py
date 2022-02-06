@@ -39,6 +39,16 @@ DATA_AUGMENTATION = {
             RandomHFlipTransform(prob=0.5),
             ToTensorTransform(),
         ]),
+        "ImageNet1k_x32": TransformChain([
+            RandomCropTransform(size=32, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            ToTensorTransform(),
+        ]),
+        "ImageNet1k_x64": TransformChain([
+            RandomCropTransform(size=64, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            ToTensorTransform(),
+        ]),
     },
 
     'DEQUANTIZED_STANDARD': {
@@ -67,6 +77,18 @@ DATA_AUGMENTATION = {
             ToTensorTransform(),
         ]),
         "TinyImageNet200": TransformChain([
+            RandomCropTransform(size=64, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            RandomUniformDequantizeTransform(),
+            ToTensorTransform(),
+        ]),
+        "ImageNet1k_x32": TransformChain([
+            RandomCropTransform(size=32, padding=4),
+            RandomHFlipTransform(prob=0.5),
+            RandomUniformDequantizeTransform(),
+            ToTensorTransform(),
+        ]),
+        "ImageNet1k_x64": TransformChain([
             RandomCropTransform(size=64, padding=4),
             RandomHFlipTransform(prob=0.5),
             RandomUniformDequantizeTransform(),
@@ -103,6 +125,13 @@ def build_dataloaders(
             random.Random(cfg.DATASETS.SEED).shuffle(indices)
         trn_indices = indices[cfg.DATASETS.TINY.TRAIN_INDICES[0] : cfg.DATASETS.TINY.TRAIN_INDICES[1]]
         val_indices = indices[cfg.DATASETS.TINY.VALID_INDICES[0] : cfg.DATASETS.TINY.VALID_INDICES[1]]
+
+    elif name in ['ImageNet1k_x32', 'ImageNet1k_x64',]:
+        indices = list(range(1281167))
+        if cfg.DATASETS.DOWNSAMPLED_IMAGENET.SHUFFLE_INDICES:
+            random.Random(cfg.DATASETS.SEED).shuffle(indices)
+        trn_indices = indices[cfg.DATASETS.DOWNSAMPLED_IMAGENET.TRAIN_INDICES[0] : cfg.DATASETS.DOWNSAMPLED_IMAGENET.TRAIN_INDICES[1]]
+        val_indices = indices[cfg.DATASETS.DOWNSAMPLED_IMAGENET.VALID_INDICES[0] : cfg.DATASETS.DOWNSAMPLED_IMAGENET.VALID_INDICES[1]]
 
     trn_images = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_images.npy'))
     trn_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/train_labels.npy'))
