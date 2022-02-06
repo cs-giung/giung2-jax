@@ -200,7 +200,7 @@ if __name__ == '__main__':
     var_dict = initialize_model(rng, model, image_shape, im_dtype)
 
     # build dataset
-    dataloaders = build_dataloaders(cfg, batch_size=[args.batch_size, 100, 100])
+    dataloaders = build_dataloaders(cfg, batch_size=[args.batch_size, 200, 200])
     trn_steps_per_epoch = dataloaders['trn_steps_per_epoch']
 
     # build optimizer
