@@ -6,25 +6,53 @@ In summary,
 * Use SGD optimizer with Nesterov momentum 0.9, batch size 128, and base learning rate 0.1.
 * Use single-cycle cosine annealed learning rate schedule with a linear warm-up.
 
-## CIFAR-10
+Here, we use the following architectures:
+* [VGGNet (Simonyan and Zisserman, 2015)](https://arxiv.org/abs/1409.1556) : VGG16, VGG19,
+* [ResNet (He et al., 2016)](https://arxiv.org/abs/1512.03385) : R20, R32, R44, R56,
+* [WideResNet (Zagoruyko and Komodakis, 2016)](https://arxiv.org/abs/1605.07146) : WRN28x1, WRN28x5, WRN28x10.
 
-Run the following command lines:
+Note that the original VGG architecture does not consider CIFAR datasets.
+Here, we have two modifications for our experiments using VGG16 and VGG19: (1) we reduce the number of channels in the last FC layers from 4,096 to 512, and (2) we also test VGG architectures with [Batch Normalization (Ioffe and Szegedy, 2015)](https://arxiv.org/abs/1502.03167) layers.
+
+## Command Lines
+
+### Train Models
+
+Run the following command lines to train VGGNet:
 ```
 python scripts/train.py \
-    --config_file ./configs/C10_{NETWORK_NAME}_SGD.yaml \
+    --config_file ./configs/{DATASET_NAME}_{NETWORK_NAME}_SGD.yaml \
     --num_epochs 200 --num_warmup_epochs 5 \
-    --batch_size 128 --learning_rate 0.1 --weight_decay 5e-4 \
-    --seed 42 --output_dir ./outputs/C10_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
-```
-```
-python scripts/eval.py \
-    --config_file ./configs/C10_{NETWORK_NAME}_SGD.yaml \
-    --weight_file ./outputs/C10_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/best_acc1
+    --batch_size 128 --learning_rate 0.05 --weight_decay 5e-4 \
+    --seed 42 --output_dir ./outputs/{DATASET_NAME}_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
 ```
 
-As a result, we get the following:
+Run the following command lines to train ResNet and WideResNet:
+```
+python scripts/train.py \
+    --config_file ./configs/{DATASET_NAME}_{NETWORK_NAME}_SGD.yaml \
+    --num_epochs 200 --num_warmup_epochs 5 \
+    --batch_size 128 --learning_rate 0.1 --weight_decay 5e-4 \
+    --seed 42 --output_dir ./outputs/{DATASET_NAME}_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
+```
+
+### Evaluate Models
+
+Run the following command lines to evaluate models:
+```
+python scripts/eval.py \
+    --config_file ./configs/{DATASET_NAME}_{NETWORK_NAME}_SGD.yaml \
+    --weight_file ./outputs/{DATASET_NAME}_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/best_acc1
+```
+
+## CIFAR-10
+
 | Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  | Train Runtime        | Misc. |
 | :-               | :-:                    | :-:                    | :-:                    | :-:                  | :-:   |
+| VGG16-ReLU       | 
+| VGG16-BN-ReLU    | 
+| VGG19-ReLU       | 
+| VGG19-BN-ReLU    | 
 | R20-BN-ReLU      | 99.91 / 0.008 / 0.029  | 92.90 / 0.255 / 0.218  | 92.49 / 0.277 / 0.235  | 0.1 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220205025405.log) |
 | R32-BN-ReLU      | 99.98 / 0.002 / 0.018  | 93.98 / 0.251 / 0.201  | 93.43 / 0.273 / 0.218  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220205024428.log) |
 | R44-BN-ReLU      | 99.98 / 0.001 / 0.018  | 94.40 / 0.260 / 0.194  | 93.85 / 0.261 / 0.199  | 0.3 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220205030945.log) |
@@ -40,23 +68,13 @@ As a result, we get the following:
 
 ## CIFAR-100
 
-Run the following command lines:
-```
-python scripts/train.py \
-    --config_file ./configs/C100_{NETWORK_NAME}_SGD.yaml \
-    --num_epochs 200 --num_warmup_epochs 5 \
-    --batch_size 128 --learning_rate 0.1 --weight_decay 5e-4 \
-    --seed 42 --output_dir ./outputs/C100_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
-```
-```
-python scripts/eval.py \
-    --config_file ./configs/C100_{NETWORK_NAME}_SGD.yaml \
-    --weight_file ./outputs/C100_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/best_acc1
-```
-
 As a result, we get the following:
 | Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  | Train Runtime        | Misc. |
 | :-               | :-:                    | :-:                    | :-:                    | :-:                  | :-:   |
+| VGG16-ReLU       | 
+| VGG16-BN-ReLU    | 
+| VGG19-ReLU       | 
+| VGG19-BN-ReLU    | 
 | R20-BN-ReLU      | 92.43 / 0.271 / 0.383  | 68.08 / 1.220 / 1.129  | 68.19 / 1.228 / 1.138  | 0.1 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220205025405.log) |
 | R32-BN-ReLU      | 98.16 / 0.089 / 0.215  | 70.46 / 1.256 / 1.085  | 70.62 / 1.232 / 1.075  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220205024428.log) |
 | R44-BN-ReLU      | 99.51 / 0.038 / 0.141  | 71.02 / 1.270 / 1.064  | 70.74 / 1.262 / 1.059  | 0.3 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220205030945.log) |
