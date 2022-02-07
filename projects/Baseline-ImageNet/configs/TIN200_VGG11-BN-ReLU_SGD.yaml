@@ -1,0 +1,31 @@
+DATASETS:
+  NAME: "TinyImageNet200"
+  # SEED: 42 (unused)
+  DATA_AUGMENTATION: "STANDARD"
+  TINY:
+    SHUFFLE_INDICES: False
+    TRAIN_INDICES: [0, 90000,]
+    VALID_INDICES: [90000, 100000,]
+
+MODEL:
+  META_ARCHITECTURE:
+    NAME: "ImageClassificationModelBase"
+  PIXEL_MEAN: [0.4802, 0.4481, 0.3976,]
+  PIXEL_STD: [0.2770, 0.2691, 0.2822,]
+  BACKBONE:
+    NAME: "VGGNet"
+    VGGNET:
+      DEPTH: 11
+      IN_PLANES: 64
+      MLP_HIDDENS: [512, 512,]
+      CONV_LAYERS: "Conv2d"
+      NORM_LAYERS: "BatchNorm2d"
+      ACTIVATIONS: "ReLU"
+      LINEAR_LAYERS: "Linear"
+  CLASSIFIER:
+    NAME: "SoftmaxClassifier"
+    SOFTMAX_CLASSIFIER:
+      NUM_CLASSES: 200
+      NUM_HEADS: 1
+      USE_BIAS: True
+      LINEAR_LAYERS: "Linear"
