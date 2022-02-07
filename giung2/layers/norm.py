@@ -11,9 +11,16 @@ Dtype = Any
 
 
 __all__ = [
+    "Identity",
     "BatchNorm2d",
     "FilterResponseNorm2d",
 ]
+
+
+class Identity(nn.Module):
+    @nn.compact
+    def __call__(self, x, **kwargs):
+        return x
 
 
 class BatchNorm2d(nn.Module):
