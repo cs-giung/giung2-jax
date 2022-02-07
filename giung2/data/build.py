@@ -3,7 +3,7 @@ import random
 import warnings
 import functools
 import numpy as np
-from typing import Dict, Union, Iterable
+from typing import Dict, Union, Callable, Iterable
 
 import jax
 import jax.numpy as jnp
@@ -102,7 +102,34 @@ DATA_AUGMENTATION = {
 def build_dataloaders(
         cfg: CfgNode,
         batch_size: Union[int, Iterable[int]],
-    ) -> Dict[str, Iterable]:
+    ) -> Dict[str, Callable]:
+    """
+    Get iterators of built-in datasets.
+
+    Args:
+        cfg: CfgNode instance that requests built-in datasets.
+        batch_size (int or sequence): The number of examples in one mini-batch. If batch_size is
+            a sequence like (b1, b2, b3), batch sizes of train/valid/test splits will be matched
+            to b1/b2/b3, respectively.
+
+    Returns:
+        A dictionary with keys 'dataloader', 'trn_loader', 'val_loader', and 'tst_loader'.
+
+    Example:
+        >>> dataloaders = build_dataloaders(cfg, batch_size=[128, 200, 200])
+        >>> for epoch_idx in enumerate(range(10), start=1):
+        >>>     rng, data_rng = jax.random.split(rng)
+        >>> 
+        >>>     trn_loader = dataloaders['dataloader'](rng=data_rng)
+        >>>     trn_loader = jax_utils.prefetch_to_device(trn_loader, size=2)
+        >>>     for batch_idx, batch in enumerate(trn_loader, start=1):
+        >>>         (...)
+        >>> 
+        >>>     val_loader = dataloaders['val_loader'](rng=None)
+        >>>     val_loader = jax_utils.prefetch_to_device(val_loader, size=2)
+        >>>     for batch_idx, batch in enumerate(val_loader, start=1):
+        >>>         (...)
+    """
     name = cfg.DATASETS.NAME
 
     if name in ['MNIST', 'KMNIST', 'FashionMNIST',]:
