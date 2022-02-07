@@ -104,42 +104,39 @@ if __name__ == '__main__':
     tst_true_labels, tst_pred_lconfs = make_predictions(
         jax_utils.prefetch_to_device(dataloaders['tst_loader'](rng=None), size=2),
         'Make predictions on test examples')
-    trn_confidences = jnp.exp(trn_pred_lconfs)
-    val_confidences = jnp.exp(val_pred_lconfs)
-    tst_confidences = jnp.exp(tst_pred_lconfs)
 
     # evaluate
     @jax.jit
-    def evaluate_acc(confidences, true_labels):
-        return jnp.mean(jnp.argmax(confidences, axis=1) == true_labels)
+    def evaluate_acc(log_confidences, true_labels):
+        return jnp.mean(jnp.argmax(log_confidences, axis=1) == true_labels)
 
     @jax.jit
-    def evaluate_nll(confidences, true_labels):
-        return jnp.mean(-jnp.sum(jnp.log(confidences) * onehot(true_labels, num_classes=confidences.shape[1]), axis=-1))
+    def evaluate_nll(log_confidences, true_labels):
+        return jnp.mean(-jnp.sum(log_confidences * onehot(true_labels, num_classes=log_confidences.shape[1]), axis=-1))
 
     @jax.jit
-    def temperature_scaling(confidences, temperature):
-        return jax.nn.softmax(jnp.log(confidences) / temperature, axis=-1)
+    def temperature_scaling(log_confidences, temperature):
+        return jax.nn.log_softmax(log_confidences / temperature, axis=-1)
 
     @jax.jit
-    def get_optimal_temperature(confidences, true_labels):
+    def get_optimal_temperature(log_confidences, true_labels):
         def obj(t):
-            return evaluate_nll(temperature_scaling(confidences, t), true_labels)
+            return evaluate_nll(temperature_scaling(log_confidences, t), true_labels)
         optimal_temperature = minimize(obj, jnp.asarray([1.0,]), method='BFGS', tol=1e-3).x[0]
         return optimal_temperature
 
-    t_opt = get_optimal_temperature(val_confidences, val_true_labels)
+    t_opt = get_optimal_temperature(val_pred_lconfs, val_true_labels)
     print('| Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  |')
     print(
         '| ' +
-        ('%.2f' % (100 * evaluate_acc(                    trn_confidences,         trn_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(                    trn_confidences,         trn_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(temperature_scaling(trn_confidences, t_opt), trn_true_labels)))[:5] + '  | ' +
-        ('%.2f' % (100 * evaluate_acc(                    val_confidences,         val_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(                    val_confidences,         val_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(temperature_scaling(val_confidences, t_opt), val_true_labels)))[:5] + '  | ' +
-        ('%.2f' % (100 * evaluate_acc(                    tst_confidences,         tst_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(                    tst_confidences,         tst_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(temperature_scaling(tst_confidences, t_opt), tst_true_labels)))[:5] + '  | ' +
+        ('%.2f' % (100 * evaluate_acc(                    trn_pred_lconfs,         trn_true_labels)))[:5] + ' / ' +
+        ('%.3f' % (      evaluate_nll(                    trn_pred_lconfs,         trn_true_labels)))[:5] + ' / ' +
+        ('%.3f' % (      evaluate_nll(temperature_scaling(trn_pred_lconfs, t_opt), trn_true_labels)))[:5] + '  | ' +
+        ('%.2f' % (100 * evaluate_acc(                    val_pred_lconfs,         val_true_labels)))[:5] + ' / ' +
+        ('%.3f' % (      evaluate_nll(                    val_pred_lconfs,         val_true_labels)))[:5] + ' / ' +
+        ('%.3f' % (      evaluate_nll(temperature_scaling(val_pred_lconfs, t_opt), val_true_labels)))[:5] + '  | ' +
+        ('%.2f' % (100 * evaluate_acc(                    tst_pred_lconfs,         tst_true_labels)))[:5] + ' / ' +
+        ('%.3f' % (      evaluate_nll(                    tst_pred_lconfs,         tst_true_labels)))[:5] + ' / ' +
+        ('%.3f' % (      evaluate_nll(temperature_scaling(tst_pred_lconfs, t_opt), tst_true_labels)))[:5] + '  | ' +
         '\n'
     )
