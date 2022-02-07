@@ -252,14 +252,10 @@ def build_resnet_backbone(cfg: CfgNode):
     _norm_layers = cfg.MODEL.BACKBONE.RESNET.NORM_LAYERS
     _activations = cfg.MODEL.BACKBONE.RESNET.ACTIVATIONS
 
-    # convolutional layers
-    if _conv_layers == 'Conv2d':
-        conv = partial(Conv2d, use_bias=False)
-    else:
-        raise NotImplementedError()
-
     # normalization layers
-    if _norm_layers == 'BatchNorm2d':
+    if _norm_layers == 'NONE':
+        norm = Identity
+    elif _norm_layers == 'BatchNorm2d':
         norm = partial(
             BatchNorm2d,
             momentum = cfg.MODEL.BATCH_NORMALIZATION.MOMENTUM,
@@ -274,6 +270,15 @@ def build_resnet_backbone(cfg: CfgNode):
     else:
         raise NotImplementedError()
 
+    # convolutional layers
+    if _conv_layers == 'Conv2d':
+        conv = partial(
+            Conv2d,
+            use_bias = False if not isinstance(norm, Identity) else True,
+        )
+    else:
+        raise NotImplementedError()
+
     # activation functions
     if _activations == 'Sigmoid':
         relu = Sigmoid
@@ -284,7 +289,7 @@ def build_resnet_backbone(cfg: CfgNode):
     else:
         raise NotImplementedError()
 
-
+    # define the first block
     first_block = partial(
         FirstBlock, channels = cfg.MODEL.BACKBONE.RESNET.IN_PLANES,
                     conv_ksp = cfg.MODEL.BACKBONE.RESNET.FIRST_BLOCK.CONV_KSP,
