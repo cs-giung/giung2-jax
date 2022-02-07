@@ -6,7 +6,6 @@ from typing import List, Union
 
 from giung2.config import CfgNode
 from giung2.layers import *
-from giung2.layers.norm import FilterResponseNorm2d
 
 
 class IdentityShortcut(nn.Module):

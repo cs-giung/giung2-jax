@@ -12,6 +12,7 @@ Dtype = Any
 
 __all__ = [
     "BatchNorm2d",
+    "FilterResponseNorm2d",
 ]
 
 
