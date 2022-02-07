@@ -51,6 +51,12 @@ if __name__ == '__main__':
     if cfg.DATASETS.NAME in ['TinyImageNet200',]:
         image_shape = (1, 64, 64, 3,)
         num_classes = 200
+    elif cfg.DATASETS.NAME in ['ImageNet1k_x32',]:
+        image_shape = (1, 32, 32, 3,)
+        num_classes = 1000
+    elif cfg.DATASETS.NAME in ['ImageNet1k_x64',]:
+        image_shape = (1, 64, 64, 3,)
+        num_classes = 1000
     elif cfg.DATASETS.NAME in ['ImageNet1k',]:
         image_shape = (1, 224, 224, 3,)
         num_classes = 1000
