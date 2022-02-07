@@ -108,7 +108,7 @@ if __name__ == '__main__':
                         help='number of initial epochs for learning rate warm-up')
     parser.add_argument('--batch_size', default=128, type=int,
                         help='number of examples per one mini-batch')
-    parser.add_argument('--learning_rate', default=0.1, type=float,
+    parser.add_argument('--learning_rate', required=True, type=float,
                         help='base learning rate for training')
     parser.add_argument('--weight_decay', default=5e-4, type=float,
                         help='weight decay coefficient')
