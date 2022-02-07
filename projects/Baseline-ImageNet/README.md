@@ -50,6 +50,11 @@ python scripts/train.py \
     --batch_size 128 --learning_rate 0.01 --weight_decay 5e-4 \
     --seed 42 --output_dir ./outputs/{DATASET_NAME}_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/
 ```
+```
+python scripts/eval.py \
+    --config_file ./configs/{DATASET_NAME}_{NETWORK_NAME}_SGD.yaml \
+    --weight_file ./outputs/{DATASET_NAME}_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/best_acc1
+```
 
 ### ImageNet1k_x32
 
