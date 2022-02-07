@@ -12,7 +12,7 @@ Here, we use the following architectures:
 * [WideResNet (Zagoruyko and Komodakis, 2016)](https://arxiv.org/abs/1605.07146) : WRN28x1, WRN28x5, WRN28x10.
 
 Note that the original VGG architecture does not consider CIFAR datasets.
-Here, we have two modifications for our experiments using VGG16 and VGG19:
+Here, we have two modifications for our experiments using VGG architectures:
 1. We reduce the number of channels in the last FC layers from 4,096 to 512,
     ```python
     MODEL.BACKBONE.VGGNET.MLP_HIDDENS = [512, 512,] # [4096, 4096,]
