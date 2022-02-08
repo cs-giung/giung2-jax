@@ -90,6 +90,12 @@ _C.MODEL.BACKBONE.VGGNET.NORM_LAYERS = 'NONE'
 _C.MODEL.BACKBONE.VGGNET.ACTIVATIONS = 'ReLU'
 _C.MODEL.BACKBONE.VGGNET.LINEAR_LAYERS = 'Linear'
 
+# LeNet
+_C.MODEL.BACKBONE.LENET = CfgNode()
+_C.MODEL.BACKBONE.LENET.CONV_LAYERS = 'Conv2d'
+_C.MODEL.BACKBONE.LENET.ACTIVATIONS = 'Sigmoid'
+_C.MODEL.BACKBONE.LENET.LINEAR_LAYERS = 'Linear'
+
 # ---------------------------------------------------------------------- #
 # Classifier
 # ---------------------------------------------------------------------- #
