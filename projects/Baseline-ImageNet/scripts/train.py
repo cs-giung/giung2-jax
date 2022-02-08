@@ -187,6 +187,7 @@ if __name__ == '__main__':
         var_dict = init({'params': key}, jnp.ones(im_shape, im_dtype))
         return var_dict
 
+    USEIMAGENET = False
     if cfg.DATASETS.NAME in ['TinyImageNet200',]:
         image_shape = (1, 64, 64, 3,)
         num_classes = 200
@@ -199,6 +200,7 @@ if __name__ == '__main__':
     elif cfg.DATASETS.NAME in ['ImageNet1k',]:
         image_shape = (1, 224, 224, 3,)
         num_classes = 1000
+        USEIMAGENET = True
     else:
         raise NotImplementedError
 
@@ -206,7 +208,11 @@ if __name__ == '__main__':
     var_dict = initialize_model(rng, model, image_shape, im_dtype)
 
     # build dataset
-    dataloaders = build_dataloaders(cfg, batch_size=[args.batch_size, 200, 200])
+    if USEIMAGENET:
+        from scripts.input_pipeline import build_imagenet_dataloader
+        dataloaders = build_imagenet_dataloader(batch_size=[args.batch_size, 200, 200])
+    else:
+        dataloaders = build_dataloaders(cfg, batch_size=[args.batch_size, 200, 200])
     trn_steps_per_epoch = dataloaders['trn_steps_per_epoch']
 
     # build optimizer
