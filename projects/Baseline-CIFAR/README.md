@@ -1,11 +1,5 @@
 # CIFAR Baselines
 
-In summary,
-* Use 45,000 train examples, 5,000 valid examples, and 10,000 test examples from 10/100 classes.
-* Use train data augmentation consisting of random cropping with padding and random horizontal flipping.
-* Use SGD optimizer with Nesterov momentum 0.9, batch size 128, and base learning rate 0.1.
-* Use single-cycle cosine annealed learning rate schedule with a linear warm-up.
-
 Here, we use the following architectures:
 * [VGGNet (Simonyan and Zisserman, 2015)](https://arxiv.org/abs/1409.1556) : VGG16, VGG19,
 * [ResNet (He et al., 2016)](https://arxiv.org/abs/1512.03385) : R20, R32, R44, R56,
@@ -24,6 +18,12 @@ Here, we have two modifications for our experiments using VGG architectures:
     ```
 
 ## Command Lines
+
+In summary,
+* Use 45,000 train examples, 5,000 valid examples, and 10,000 test examples from 10/100 classes.
+* Use train data augmentation consisting of random cropping with padding and random horizontal flipping.
+* Use SGD optimizer with Nesterov momentum 0.9, batch size 128, and base learning rate 0.1.
+* Use single-cycle cosine annealed learning rate schedule with a linear warm-up.
 
 ### Train Models
 
