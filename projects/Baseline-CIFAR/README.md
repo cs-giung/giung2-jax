@@ -81,7 +81,6 @@ python scripts/eval.py \
 
 ## CIFAR-100
 
-As a result, we get the following:
 | Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  | Train Runtime        | Misc. |
 | :-               | :-:                    | :-:                    | :-:                    | :-:                  | :-:   |
 | VGG11-ReLU       | 99.91 / 0.010 / 0.164  | 62.68 / 2.188 / 1.537  | 62.48 / 2.160 / 1.515  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220207164341.log) |
