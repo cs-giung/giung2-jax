@@ -1,7 +1,7 @@
 # CIFAR Baselines
 
 Here, we use the following architectures:
-* [VGGNet (Simonyan and Zisserman, 2015)](https://arxiv.org/abs/1409.1556) : VGG16, VGG19,
+* [VGGNet (Simonyan and Zisserman, 2015)](https://arxiv.org/abs/1409.1556) : VGG11, VGG13, VGG16, VGG19,
 * [ResNet (He et al., 2016)](https://arxiv.org/abs/1512.03385) : R20, R32, R44, R56,
 * [WideResNet (Zagoruyko and Komodakis, 2016)](https://arxiv.org/abs/1605.07146) : WRN28x1, WRN28x5, WRN28x10.
 
