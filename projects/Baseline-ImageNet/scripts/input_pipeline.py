@@ -195,10 +195,14 @@ def create_split(dataset_builder, batch_size, train, dtype=tf.float32,
         ds = ds.cache()
 
     if train:
+        ds = ds.repeat()
         ds = ds.shuffle(split_size, seed=seed)
 
     ds = ds.map(decode_example, num_parallel_calls=tf.data.experimental.AUTOTUNE)
     ds = ds.batch(batch_size, drop_remainder=True)
+
+    if not train:
+        ds = ds.repeat()
 
     ds = ds.prefetch(10)
 
