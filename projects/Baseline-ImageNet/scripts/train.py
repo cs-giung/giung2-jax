@@ -106,11 +106,11 @@ if __name__ == '__main__':
                         help='number of epochs for training')
     parser.add_argument('--num_warmup_epochs', default=5, type=int,
                         help='number of initial epochs for learning rate warm-up')
-    parser.add_argument('--batch_size', default=128, type=int,
+    parser.add_argument('--batch_size', default=None, required=True, type=int,
                         help='number of examples per one mini-batch')
-    parser.add_argument('--learning_rate', required=True, type=float,
+    parser.add_argument('--learning_rate', default=None, required=True, type=float,
                         help='base learning rate for training')
-    parser.add_argument('--weight_decay', default=5e-4, type=float,
+    parser.add_argument('--weight_decay', default=None, required=True, type=float,
                         help='weight decay coefficient')
     parser.add_argument('--output_dir', default=None, required=True,
                         help='output directory')
