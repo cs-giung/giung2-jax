@@ -14,6 +14,17 @@ from giung2.data.transform import *
 
 DATA_AUGMENTATION = {
 
+    'NONE': {
+        'MNIST': ToTensorTransform(),
+        'KMNIST': ToTensorTransform(),
+        'FashionMNIST': ToTensorTransform(),
+        'CIFAR10': ToTensorTransform(),
+        'CIFAR100': ToTensorTransform(),
+        'TinyImageNet200': ToTensorTransform(),
+        'ImageNet1k_x32': ToTensorTransform(),
+        'ImageNet1k_x64': ToTensorTransform(),
+    },
+
     'STANDARD': {
         'MNIST': TransformChain([
             ToTensorTransform(),
