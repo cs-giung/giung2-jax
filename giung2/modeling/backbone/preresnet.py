@@ -248,46 +248,20 @@ class PreResNet(nn.Module):
 
 def build_preresnet_backbone(cfg: CfgNode):
 
-    _conv_layers = cfg.MODEL.BACKBONE.RESNET.CONV_LAYERS
-    _norm_layers = cfg.MODEL.BACKBONE.RESNET.NORM_LAYERS
-    _activations = cfg.MODEL.BACKBONE.RESNET.ACTIVATIONS
-
-    # normalization layers
-    if _norm_layers == 'NONE':
-        norm = Identity
-    elif _norm_layers == 'BatchNorm2d':
-        norm = partial(
-            BatchNorm2d,
-            momentum = cfg.MODEL.BATCH_NORMALIZATION.MOMENTUM,
-            epsilon  = cfg.MODEL.BATCH_NORMALIZATION.EPSILON,
-        )
-    elif _norm_layers == 'FilterResponseNorm2d':
-        norm = partial(
-            FilterResponseNorm2d,
-            epsilon               = cfg.MODEL.FILTER_RESPONSE_NORMALIZATION.EPSILON,
-            use_learnable_epsilon = cfg.MODEL.FILTER_RESPONSE_NORMALIZATION.USE_LEARNABLE_EPSILON,
-        )
-    else:
-        raise NotImplementedError()
-
-    # convolutional layers
-    if _conv_layers == 'Conv2d':
-        conv = partial(
-            Conv2d,
-            use_bias = False if not isinstance(norm, Identity) else True,
-        )
-    else:
-        raise NotImplementedError()
-
-    # activation functions
-    if _activations == 'Sigmoid':
-        relu = Sigmoid
-    elif _activations == 'ReLU':
-        relu = ReLU
-    elif _activations == 'SiLU':
-        relu = SiLU
-    else:
-        raise NotImplementedError()
+    # define layers
+    norm = get_norm2d_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.RESNET.NORM_LAYERS,
+    )
+    conv = get_conv2d_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.RESNET.CONV_LAYERS,
+        use_bias = False if not isinstance(norm, Identity) else True,
+    )
+    relu = get_activation_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.RESNET.ACTIVATIONS,
+    )
 
     # define the first block
     first_block = partial(
@@ -300,6 +274,7 @@ def build_preresnet_backbone(cfg: CfgNode):
                     pool     = MaxPool2d if cfg.MODEL.BACKBONE.RESNET.FIRST_BLOCK.USE_POOL_LAYER else None,
         )
 
+    # define intermediate blocks
     _block = cfg.MODEL.BACKBONE.RESNET.BLOCK
     if _block == 'BasicBlock':
         block = BasicBlock
@@ -311,6 +286,7 @@ def build_preresnet_backbone(cfg: CfgNode):
         block = BottleneckBlock
         block_expansion = 4
 
+    # define shortcuts
     _shortcut = cfg.MODEL.BACKBONE.RESNET.SHORTCUT
     if _shortcut == 'IdentityShortcut':
         shortcut = IdentityShortcut

@@ -66,55 +66,25 @@ class VGGNet(nn.Module):
 
 def build_vggnet_backbone(cfg: CfgNode):
 
-    _conv_layers = cfg.MODEL.BACKBONE.VGGNET.CONV_LAYERS
-    _norm_layers = cfg.MODEL.BACKBONE.VGGNET.NORM_LAYERS
-    _activations = cfg.MODEL.BACKBONE.VGGNET.ACTIVATIONS
-    _linear_layers = cfg.MODEL.BACKBONE.VGGNET.LINEAR_LAYERS
-
-    # normalization layers
-    if _norm_layers == 'NONE':
-        norm = Identity
-    elif _norm_layers == 'BatchNorm2d':
-        norm = partial(
-            BatchNorm2d,
-            momentum = cfg.MODEL.BATCH_NORMALIZATION.MOMENTUM,
-            epsilon  = cfg.MODEL.BATCH_NORMALIZATION.EPSILON,
-        )
-    elif _norm_layers == 'FilterResponseNorm2d':
-        norm = partial(
-            FilterResponseNorm2d,
-            epsilon               = cfg.MODEL.FILTER_RESPONSE_NORMALIZATION.EPSILON,
-            use_learnable_epsilon = cfg.MODEL.FILTER_RESPONSE_NORMALIZATION.USE_LEARNABLE_EPSILON,
-        )
-    else:
-        raise NotImplementedError()
-
-    # convolutional layers
-    if _conv_layers == 'Conv2d':
-        conv = partial(
-            Conv2d,
-            use_bias = False if not isinstance(norm, Identity) else True,
-        )
-    else:
-        raise NotImplementedError()
-
-    # activation functions
-    if _activations == 'Sigmoid':
-        relu = Sigmoid
-    elif _activations == 'ReLU':
-        relu = ReLU
-    elif _activations == 'SiLU':
-        relu = SiLU
-    else:
-        raise NotImplementedError()
-
-    # linear layers
-    if _linear_layers == 'Linear':
-        linear = partial(
-            Linear, use_bias=cfg.MODEL.CLASSIFIER.SOFTMAX_CLASSIFIER.USE_BIAS
-        )
-    else:
-        raise NotImplementedError()
+    # define layers
+    norm = get_norm2d_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.VGGNET.NORM_LAYERS,
+    )
+    conv = get_conv2d_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.VGGNET.CONV_LAYERS,
+        use_bias = False if not isinstance(norm, Identity) else True,
+    )
+    relu = get_activation_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.VGGNET.ACTIVATIONS,
+    )
+    linear = get_linear_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.VGGNET.LINEAR_LAYERS,
+        use_bias = True,
+    )
 
     return VGGNet(
         depth       = cfg.MODEL.BACKBONE.VGGNET.DEPTH,

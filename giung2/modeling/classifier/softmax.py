@@ -4,7 +4,7 @@ import flax.linen as nn
 from functools import partial
 
 from giung2.config import CfgNode
-from giung2.layers import Linear
+from giung2.layers import *
 
 
 class SoftmaxClassifier(nn.Module):
@@ -25,16 +25,16 @@ class SoftmaxClassifier(nn.Module):
 
 
 def build_softmax_classifier(cfg: CfgNode):
-
-    _linear_layers = cfg.MODEL.CLASSIFIER.SOFTMAX_CLASSIFIER.LINEAR_LAYERS
-    if _linear_layers == 'Linear':
-        linear = partial(
-            Linear, use_bias=cfg.MODEL.CLASSIFIER.SOFTMAX_CLASSIFIER.USE_BIAS
-        )
+    
+    # define layers
+    linear = get_linear_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.CLASSIFIER.SOFTMAX_CLASSIFIER.LINEAR_LAYERS,
+        use_bias = cfg.MODEL.CLASSIFIER.SOFTMAX_CLASSIFIER.USE_BIAS,
+    )
 
     return SoftmaxClassifier(
         num_classes = cfg.MODEL.CLASSIFIER.SOFTMAX_CLASSIFIER.NUM_CLASSES,
         num_heads   = cfg.MODEL.CLASSIFIER.SOFTMAX_CLASSIFIER.NUM_HEADS,
         linear      = linear,
     )
-

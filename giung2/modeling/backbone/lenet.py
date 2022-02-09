@@ -56,36 +56,21 @@ class LeNet5(nn.Module):
 
 def build_lenet_backbone(cfg: CfgNode):
 
-    _conv_layers = cfg.MODEL.BACKBONE.LENET.CONV_LAYERS
-    _activations = cfg.MODEL.BACKBONE.LENET.ACTIVATIONS
-    _linear_layers = cfg.MODEL.BACKBONE.LENET.LINEAR_LAYERS
-
-    # convolutional layers
-    if _conv_layers == 'Conv2d':
-        conv = partial(
-            Conv2d,
-            use_bias = True,
-        )
-    else:
-        raise NotImplementedError()
-
-    # activation functions
-    if _activations == 'Sigmoid':
-        relu = Sigmoid
-    elif _activations == 'ReLU':
-        relu = ReLU
-    elif _activations == 'SiLU':
-        relu = SiLU
-    else:
-        raise NotImplementedError()
-
-    # linear layers
-    if _linear_layers == 'Linear':
-        linear = partial(
-            Linear, use_bias=cfg.MODEL.CLASSIFIER.SOFTMAX_CLASSIFIER.USE_BIAS
-        )
-    else:
-        raise NotImplementedError()
+    # define layers
+    conv = get_conv2d_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.LENET.CONV_LAYERS,
+        use_bias = True,
+    )
+    relu = get_activation_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.LENET.ACTIVATIONS,
+    )
+    linear = get_linear_layers(
+        cfg      = cfg,
+        name     = cfg.MODEL.BACKBONE.LENET.LINEAR_LAYERS,
+        use_bias = True,
+    )
 
     return LeNet5(
         conv   = conv,
