@@ -1,0 +1,25 @@
+DATASETS:
+  NAME: "ImageNet1k"
+
+MODEL:
+  META_ARCHITECTURE:
+    NAME: "ImageClassificationModelBase"
+  PIXEL_MEAN: [0.485, 0.456, 0.406,]
+  PIXEL_STD: [0.229, 0.224, 0.225,]
+  BACKBONE:
+    NAME: "VGGNet"
+    VGGNET:
+      DEPTH: 16
+      IN_PLANES: 64
+      MLP_HIDDENS: [4096, 4096,]
+      CONV_LAYERS: "Conv2d"
+      NORM_LAYERS: "BatchNorm2d"
+      ACTIVATIONS: "ReLU"
+      LINEAR_LAYERS: "Linear"
+  CLASSIFIER:
+    NAME: "SoftmaxClassifier"
+    SOFTMAX_CLASSIFIER:
+      NUM_CLASSES: 1000
+      NUM_HEADS: 1
+      USE_BIAS: True
+      LINEAR_LAYERS: "Linear"
