@@ -37,7 +37,7 @@ class ProjectionShortcut(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
-        y = self.conv(self.channels * self.expansion,
+        y = self.conv(channels    = self.channels * self.expansion,
                       kernel_size = 1,
                       stride      = self.stride,
                       padding     = 0,)(x, **kwargs)
