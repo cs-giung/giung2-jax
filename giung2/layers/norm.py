@@ -32,6 +32,13 @@ class BatchNorm2d(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
+        """
+        Args:
+            x (Array): An input array with shape [N, H, W, C,].
+        
+        Returns:
+            y (Array): An output array with shape [N, H, W, C,].
+        """
         use_running_average = kwargs.pop("use_running_average", True)
         use_running_average = nn.merge_param('use_running_average', self.use_running_average, use_running_average)
         m = self.variable('batch_stats', 'm', jnp.zeros, (x.shape[-1],))
@@ -67,6 +74,13 @@ class FilterResponseNorm2d(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
+        """
+        Args:
+            x (Array): An input array with shape [N, H, W, C,].
+        
+        Returns:
+            y (Array): An output array with shape [N, H, W, C,].
+        """
         if self.use_learnable_epsilon:
             e = jnp.asarray(self.param('e', self.e_init, (1,)), x.dtype)
             eps = self.epsilon + jnp.abs(e)

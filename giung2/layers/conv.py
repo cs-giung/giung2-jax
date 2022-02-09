@@ -27,6 +27,13 @@ class Conv2d(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
+        """
+        Args:
+            x (Array): An input array with shape [N, H1, W1, C1,].
+        
+        Returns:
+            y (Array): An output array with shape [N, H2, W2, C2,].
+        """
         in_channels = x.shape[-1]
         w_shape = (self.kernel_size, self.kernel_size, in_channels // self.num_groups, self.channels,)
         padding = self.padding if isinstance(self.padding, str) else [

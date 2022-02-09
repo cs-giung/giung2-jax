@@ -24,6 +24,13 @@ class Linear(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
+        """
+        Args:
+            x (Array): An input array with shape [N, C1,].
+        
+        Returns:
+            y (Array): An output array with shape [N, C2,].
+        """
         w = jnp.asarray(self.param('w', self.w_init, (x.shape[-1], self.features,)), x.dtype)
         y = jnp.dot(x, w)
         if self.use_bias:

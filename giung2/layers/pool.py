@@ -23,6 +23,13 @@ class MaxPool2d(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
+        """
+        Args:
+            x (Array): An input array with shape [N, H1, W1, C1,].
+        
+        Returns:
+            y (Array): An output array with shape [N, H2, W2, C2,].
+        """
         strides = (1, self.stride, self.stride, 1,)
         padding = self.padding
         if not isinstance(padding, str):
@@ -39,6 +46,13 @@ class AvgPool2d(nn.Module):
 
     @nn.compact
     def __call__(self, x, **kwargs):
+        """
+        Args:
+            x (Array): An input array with shape [N, H1, W1, C1,].
+        
+        Returns:
+            y (Array): An output array with shape [N, H2, W2, C2,].
+        """
         strides = (1, self.stride, self.stride, 1,)
         padding = self.padding
         if not isinstance(padding, str):
