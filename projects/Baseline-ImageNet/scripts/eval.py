@@ -48,6 +48,7 @@ if __name__ == '__main__':
         var_dict = init({'params': key}, jnp.ones(im_shape, im_dtype))
         return var_dict
 
+    USEIMAGENET = False
     if cfg.DATASETS.NAME in ['TinyImageNet200',]:
         image_shape = (1, 64, 64, 3,)
         num_classes = 200
@@ -60,14 +61,12 @@ if __name__ == '__main__':
     elif cfg.DATASETS.NAME in ['ImageNet1k',]:
         image_shape = (1, 224, 224, 3,)
         num_classes = 1000
+        USEIMAGENET = True
     else:
         raise NotImplementedError
 
     im_dtype = jnp.float32
     var_dict = initialize_model(rng, model, image_shape, im_dtype)
-
-    # build dataset
-    dataloaders = build_dataloaders(cfg, batch_size=args.batch_size)
 
     # load pre-trained weights
     ckpt = checkpoints.restore_checkpoint(args.weight_file, target=None)
@@ -77,7 +76,7 @@ if __name__ == '__main__':
         'batch_stats': ckpt['batch_stats'],
     }
 
-    # make predictions
+    # define functions
     CPU = jax.devices("cpu")[0]
 
     def predict(var_dict, images):
@@ -86,26 +85,18 @@ if __name__ == '__main__':
 
     predict = jax.pmap(functools.partial(predict, var_dict), axis_name='batch')
 
-    def make_predictions(dataloader, desc):
+    def make_predictions(dataloader, desc, num_steps_per_epoch=None):
         true_labels, pred_lconfs = [], []
-        for batch in tqdm(dataloader, desc=desc, leave=False):
+        for batch_idx, batch in tqdm(enumerate(dataloader), desc=desc, leave=False):
             labels = jax.device_put(jnp.concatenate(        batch['labels'] ), CPU)
             lconfs = jax.device_put(jnp.concatenate(predict(batch['images'])), CPU)
             true_labels.append(labels)
             pred_lconfs.append(lconfs)
+            if (num_steps_per_epoch is not None
+                and batch_idx == num_steps_per_epoch):
+                break
         return jnp.concatenate(true_labels), jnp.concatenate(pred_lconfs)
 
-    trn_true_labels, trn_pred_lconfs = make_predictions(
-        jax_utils.prefetch_to_device(dataloaders['trn_loader'](rng=None), size=2),
-        'Make predictions on train examples')
-    val_true_labels, val_pred_lconfs = make_predictions(
-        jax_utils.prefetch_to_device(dataloaders['val_loader'](rng=None), size=2),
-        'Make predictions on valid examples')
-    tst_true_labels, tst_pred_lconfs = make_predictions(
-        jax_utils.prefetch_to_device(dataloaders['tst_loader'](rng=None), size=2),
-        'Make predictions on test examples')
-
-    # evaluate
     @jax.jit
     def evaluate_acc(log_confidences, true_labels):
         return jnp.mean(jnp.argmax(log_confidences, axis=1) == true_labels)
@@ -125,18 +116,59 @@ if __name__ == '__main__':
         optimal_temperature = minimize(obj, jnp.asarray([1.0,]), method='BFGS', tol=1e-3).x[0]
         return optimal_temperature
 
-    t_opt = get_optimal_temperature(val_pred_lconfs, val_true_labels)
-    print('| Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  |')
-    print(
-        '| ' +
-        ('%.2f' % (100 * evaluate_acc(                    trn_pred_lconfs,         trn_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(                    trn_pred_lconfs,         trn_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(temperature_scaling(trn_pred_lconfs, t_opt), trn_true_labels)))[:5] + '  | ' +
-        ('%.2f' % (100 * evaluate_acc(                    val_pred_lconfs,         val_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(                    val_pred_lconfs,         val_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(temperature_scaling(val_pred_lconfs, t_opt), val_true_labels)))[:5] + '  | ' +
-        ('%.2f' % (100 * evaluate_acc(                    tst_pred_lconfs,         tst_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(                    tst_pred_lconfs,         tst_true_labels)))[:5] + ' / ' +
-        ('%.3f' % (      evaluate_nll(temperature_scaling(tst_pred_lconfs, t_opt), tst_true_labels)))[:5] + '  | ' +
-        '\n'
-    )
+    if USEIMAGENET:
+
+        # build dataset
+        from scripts.input_pipeline import build_imagenet_dataloader
+        dataloaders = build_imagenet_dataloader(batch_size=args.batch_size)
+        val_steps_per_epoch = dataloaders['val_steps_per_epoch']
+
+        # make predictions
+        val_true_labels, val_pred_lconfs = make_predictions(
+            jax_utils.prefetch_to_device(dataloaders['val_loader'](rng=None), size=2),
+            'Make predictions on valid examples',
+            val_steps_per_epoch)
+
+        # evaluate predictions
+        t_opt = get_optimal_temperature(val_pred_lconfs, val_true_labels)
+        print('| Valid ACC / NLL / cNLL |')
+        print(
+            '| ' +
+            ('%.2f' % (100 * evaluate_acc(                    val_pred_lconfs,         val_true_labels)))[:5] + ' / ' +
+            ('%.3f' % (      evaluate_nll(                    val_pred_lconfs,         val_true_labels)))[:5] + ' / ' +
+            ('%.3f' % (      evaluate_nll(temperature_scaling(val_pred_lconfs, t_opt), val_true_labels)))[:5] + '  | ' +
+            '\n'
+        )
+
+    else:
+
+        # build dataset
+        dataloaders = build_dataloaders(cfg, batch_size=args.batch_size)
+
+        # make predictions
+        trn_true_labels, trn_pred_lconfs = make_predictions(
+            jax_utils.prefetch_to_device(dataloaders['trn_loader'](rng=None), size=2),
+            'Make predictions on train examples')
+        val_true_labels, val_pred_lconfs = make_predictions(
+            jax_utils.prefetch_to_device(dataloaders['val_loader'](rng=None), size=2),
+            'Make predictions on valid examples')
+        tst_true_labels, tst_pred_lconfs = make_predictions(
+            jax_utils.prefetch_to_device(dataloaders['tst_loader'](rng=None), size=2),
+            'Make predictions on test examples')
+
+        # evaluate predictions
+        t_opt = get_optimal_temperature(val_pred_lconfs, val_true_labels)
+        print('| Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  |')
+        print(
+            '| ' +
+            ('%.2f' % (100 * evaluate_acc(                    trn_pred_lconfs,         trn_true_labels)))[:5] + ' / ' +
+            ('%.3f' % (      evaluate_nll(                    trn_pred_lconfs,         trn_true_labels)))[:5] + ' / ' +
+            ('%.3f' % (      evaluate_nll(temperature_scaling(trn_pred_lconfs, t_opt), trn_true_labels)))[:5] + '  | ' +
+            ('%.2f' % (100 * evaluate_acc(                    val_pred_lconfs,         val_true_labels)))[:5] + ' / ' +
+            ('%.3f' % (      evaluate_nll(                    val_pred_lconfs,         val_true_labels)))[:5] + ' / ' +
+            ('%.3f' % (      evaluate_nll(temperature_scaling(val_pred_lconfs, t_opt), val_true_labels)))[:5] + '  | ' +
+            ('%.2f' % (100 * evaluate_acc(                    tst_pred_lconfs,         tst_true_labels)))[:5] + ' / ' +
+            ('%.3f' % (      evaluate_nll(                    tst_pred_lconfs,         tst_true_labels)))[:5] + ' / ' +
+            ('%.3f' % (      evaluate_nll(temperature_scaling(tst_pred_lconfs, t_opt), tst_true_labels)))[:5] + '  | ' +
+            '\n'
+        )
