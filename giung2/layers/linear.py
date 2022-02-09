@@ -40,8 +40,8 @@ class Linear(nn.Module):
 
 
 class Linear_BatchEnsemble(nn.Module):
-    features: int
     ensemble_size: int
+    features: int
     use_bias: bool = True
     w_init: Callable[[PRNGKey, Shape, Dtype], Array] = jax.nn.initializers.kaiming_normal()
     b_init: Callable[[PRNGKey, Shape, Dtype], Array] = jax.nn.initializers.zeros
@@ -49,7 +49,14 @@ class Linear_BatchEnsemble(nn.Module):
     s_init: Callable[[PRNGKey, Shape, Dtype], Array] = jax.nn.initializers.ones
 
     @nn.compact
-    def __call__(self, x, **kwargs): 
+    def __call__(self, x, **kwargs):
+        """
+        Args:
+            x (Array): An input array with shape [N, C1,].
+        
+        Returns:
+            y (Array): An output array with shape [N, C2,].
+        """
         r = jnp.asarray(self.param('r', self.r_init, (self.ensemble_size, x.shape[-1],)), x.dtype)
         x = jnp.reshape(x, (self.ensemble_size, x.shape[0] // self.ensemble_size, -1,))
         x = jnp.multiply(x, jnp.reshape(r, (self.ensemble_size, 1, -1,)))
