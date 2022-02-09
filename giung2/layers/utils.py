@@ -1,4 +1,7 @@
+import jax
+import jax.numpy as jnp
 import functools
+
 from .act import *
 from .conv import *
 from .linear import *
@@ -11,6 +14,20 @@ __all__ = [
     'get_linear_layers',
     'get_activation_layers',
 ]
+
+
+def _constant(value=0., dtype=jnp.float_):
+    def init(key, shape, dtype=dtype):
+        dtype = jax.dtypes.canonicalize_dtype(dtype)
+        return value + jnp.zeros(shape, dtype)
+    return init
+
+
+def _normal(mean=0., stddev=1e-2, dtype=jnp.float_):
+    def init(key, shape, dtype=dtype):
+        dtype = jax.dtypes.canonicalize_dtype(dtype)
+        return mean + jax.random.normal(key, shape, dtype) * stddev
+    return init
 
 
 def get_norm2d_layers(cfg, name: str):
@@ -58,10 +75,28 @@ def get_conv2d_layers(cfg, name, use_bias=False):
         )
 
     if name == 'Conv2d_BatchEnsemble':
+
+        init_fn_name = cfg.MODEL.BATCH_ENSEMBLE.INITIALIZER.NAME
+
+        if init_fn_name == 'constant':
+            value = cfg.MODEL.BATCH_ENSEMBLE.INITIALIZER.VALUES[0]
+            init_fn = _constant(value)
+
+        elif init_fn_name == 'normal':
+            mean, std = cfg.MODEL.BATCH_ENSEMBLE.INITIALIZER.VALUES
+            init_fn = _normal(mean, std)
+
+        else:
+            raise NotImplementedError(
+                f'Unknown name for initializer of BatchEnsemble: {init_fn_name}'
+            )
+
         return functools.partial(
             Conv2d_BatchEnsemble,
             ensemble_size = cfg.MODEL.BATCH_ENSEMBLE.ENSEMBLE_SIZE,
             use_bias      = use_bias,
+            r_init        = init_fn,
+            s_init        = init_fn,
         )
 
     raise NotImplementedError(f'Unknown name for conv2d layers: {name}')
@@ -83,10 +118,28 @@ def get_linear_layers(cfg, name, use_bias=False):
         )
 
     if name == 'Linear_BatchEnsemble':
+
+        init_fn_name = cfg.MODEL.BATCH_ENSEMBLE.INITIALIZER.NAME
+
+        if init_fn_name == 'constant':
+            value = cfg.MODEL.BATCH_ENSEMBLE.INITIALIZER.VALUES[0]
+            init_fn = _constant(value)
+
+        elif init_fn_name == 'normal':
+            mean, std = cfg.MODEL.BATCH_ENSEMBLE.INITIALIZER.VALUES
+            init_fn = _normal(mean, std)
+
+        else:
+            raise NotImplementedError(
+                f'Unknown name for initializer of BatchEnsemble: {init_fn_name}'
+            )
+
         return functools.partial(
             Linear_BatchEnsemble,
             ensemble_size = cfg.MODEL.BATCH_ENSEMBLE.ENSEMBLE_SIZE,
             use_bias      = use_bias,
+            r_init        = init_fn,
+            s_init        = init_fn,
         )
 
     raise NotImplementedError(f'Unknown name for linear layers: {name}')

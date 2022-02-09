@@ -87,9 +87,11 @@ class Conv2d_BatchEnsemble(nn.Module):
 
         w = jnp.asarray(self.param('w', self.w_init, w_shape), x.dtype)
         y = jax.lax.conv_general_dilated(
-            x, w, (self.stride, self.stride,), padding,
+            jnp.reshape(
+                x, (x.shape[0] * x.shape[1], x.shape[2], x.shape[3], -1)
+            ), w, (self.stride, self.stride,), padding,
             lhs_dilation=(1,1,), rhs_dilation=(1,1,),
-            dimension_numbers   = jax.lax.ConvDimensionNumbers((0,4,1,2,3,), (4,3,0,1,2,), (0,4,1,2,3,)),
+            dimension_numbers   = jax.lax.ConvDimensionNumbers((0,3,1,2,), (3,2,0,1,), (0,3,1,2,)),
             feature_group_count = self.num_groups,
         )
         if self.use_bias:
@@ -97,6 +99,7 @@ class Conv2d_BatchEnsemble(nn.Module):
             y = jnp.add(y, jnp.reshape(b, (1, 1, 1, -1,)))
 
         s = jnp.asarray(self.param('s', self.s_init, (self.ensemble_size, y.shape[-1],)), x.dtype)
+        y = jnp.reshape(y, (self.ensemble_size, y.shape[0] // self.ensemble_size, y.shape[1], y.shape[2], -1))
         y = jnp.multiply(y, jnp.reshape(s, (self.ensemble_size, 1, 1, 1, -1,)))
         y = jnp.reshape(y, (y.shape[0] * y.shape[1], y.shape[2], y.shape[3], -1))
         return y
