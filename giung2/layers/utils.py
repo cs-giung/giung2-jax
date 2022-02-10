@@ -117,6 +117,13 @@ def get_linear_layers(cfg, name, use_bias=False):
             use_bias = use_bias,
         )
 
+    if name == 'Linear_Dropout':
+        return functools.partial(
+            Linear_Dropout,
+            use_bias  = use_bias,
+            drop_rate = cfg.MODEL.DROPOUT.DROP_RATE,
+        )
+
     if name == 'Linear_BatchEnsemble':
 
         init_fn_name = cfg.MODEL.BATCH_ENSEMBLE.INITIALIZER.NAME

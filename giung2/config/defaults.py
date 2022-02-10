@@ -124,6 +124,12 @@ _C.MODEL.FILTER_RESPONSE_NORMALIZATION.EPSILON = 1e-6
 _C.MODEL.FILTER_RESPONSE_NORMALIZATION.USE_LEARNABLE_EPSILON = False
 
 # ---------------------------------------------------------------------- #
+# Dropout
+# ---------------------------------------------------------------------- #
+_C.MODEL.DROPOUT = CfgNode()
+_C.MODEL.DROPOUT.DROP_RATE = 0.5
+
+# ---------------------------------------------------------------------- #
 # BatchEnsemble
 # ---------------------------------------------------------------------- #
 _C.MODEL.BATCH_ENSEMBLE = CfgNode()
