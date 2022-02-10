@@ -2,6 +2,8 @@ DATASETS:
   NAME: "ImageNet1k"
 
 MODEL:
+  DROPOUT:
+    DROP_RATE: 0.5
   META_ARCHITECTURE:
     NAME: "ImageClassificationModelBase"
   PIXEL_MEAN: [0.485, 0.456, 0.406,]
@@ -15,11 +17,11 @@ MODEL:
       CONV_LAYERS: "Conv2d"
       NORM_LAYERS: "NONE"
       ACTIVATIONS: "ReLU"
-      LINEAR_LAYERS: "Linear"
+      LINEAR_LAYERS: "Linear_Dropout"
   CLASSIFIER:
     NAME: "SoftmaxClassifier"
     SOFTMAX_CLASSIFIER:
       NUM_CLASSES: 1000
       NUM_HEADS: 1
       USE_BIAS: True
-      LINEAR_LAYERS: "Linear"
+      LINEAR_LAYERS: "Linear_Dropout"

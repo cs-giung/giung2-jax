@@ -29,7 +29,9 @@ class TrainState(train_state.TrainState):
     batch_stats: Any = None
 
 
-def step_trn(state, batch, num_classes, scheduler):
+def step_trn(state, batch, num_classes, scheduler, dropout_rng):
+
+    _, new_dropout_rng = jax.random.split(dropout_rng)
 
     # define loss function
     def loss_fn(params):
@@ -39,7 +41,11 @@ def step_trn(state, batch, num_classes, scheduler):
                 'batch_stats': state.batch_stats,
                 'image_stats': state.image_stats,
             }, batch['images'], mutable=['batch_stats',],
-            use_running_average=False,
+            use_running_average = False, # batchnorm
+            deterministic       = False, # dropout
+            rngs                = {
+                'dropout': dropout_rng,
+            },
         )
 
         # loss_ce
@@ -76,7 +82,7 @@ def step_trn(state, batch, num_classes, scheduler):
     metrics = jax.lax.pmean(metrics, axis_name='batch')
     metrics['lr'] = scheduler(state.step)
 
-    return new_state, metrics
+    return new_state, metrics, new_dropout_rng
 
 
 def step_val(state, batch, num_classes):
@@ -266,6 +272,7 @@ if __name__ == '__main__':
         val_loader = jax_utils.prefetch_to_device(val_loader, size=2)
 
     state = jax_utils.replicate(state)
+    dropout_rng = jax.random.split(rng, jax.process_count())
     for epoch_idx in range(epoch_offset + 1, args.num_epochs + 1):
 
         # ---------------------------------------------------------------------- #
@@ -278,7 +285,7 @@ if __name__ == '__main__':
             trn_loader = dataloaders['dataloader'](rng=data_rng)
             trn_loader = jax_utils.prefetch_to_device(trn_loader, size=2)
         for batch_idx, batch in enumerate(trn_loader, start=1):
-            state, metrics = step_trn(state, batch)
+            state, metrics, dropout_rng = step_trn(state, batch, dropout_rng=dropout_rng)
             trn_metric.append(metrics)
             if batch_idx == trn_steps_per_epoch:
                 break
