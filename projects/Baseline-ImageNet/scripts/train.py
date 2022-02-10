@@ -272,7 +272,7 @@ if __name__ == '__main__':
         val_loader = jax_utils.prefetch_to_device(val_loader, size=2)
 
     state = jax_utils.replicate(state)
-    dropout_rng = jax.random.split(rng, jax.process_count())
+    dropout_rng = jax.random.split(rng, jax.local_device_count())
     for epoch_idx in range(epoch_offset + 1, args.num_epochs + 1):
 
         # ---------------------------------------------------------------------- #
