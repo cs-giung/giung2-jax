@@ -135,6 +135,7 @@ def preprocess_for_train(image_bytes, dtype=tf.float32, image_size=IMAGE_SIZE):
     image = tf.reshape(image, [image_size, image_size, 3])
     image = tf.image.random_flip_left_right(image)
     image = tf.image.convert_image_dtype(image, dtype=dtype)
+    image = image / 255.0
     return image
 
 
@@ -150,6 +151,7 @@ def preprocess_for_eval(image_bytes, dtype=tf.float32, image_size=IMAGE_SIZE):
     image = _decode_and_center_crop(image_bytes, image_size)
     image = tf.reshape(image, [image_size, image_size, 3])
     image = tf.image.convert_image_dtype(image, dtype=dtype)
+    image = image / 255.0
     return image
 
 
