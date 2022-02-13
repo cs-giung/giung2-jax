@@ -130,15 +130,6 @@ python scripts/train.py \
     --seed 42 --output_dir ./outputs/ImageNet1k_{NETWORK_NAME}/SGD/s42_e100_b256_wd5e-4/
 ```
 
-Run the following command lines to train models with batch size 1024 and base learning rate 0.4:
-```
-python scripts/train.py \
-    --config_file ./configs/ImageNet1k_{NETWORK_NAME}_SGD.yaml \
-    --num_epochs 100 --num_warmup_epochs 5 \
-    --batch_size 1024 --learning_rate 0.4 --weight_decay 1e-4 \
-    --seed 42 --output_dir ./outputs/ImageNet1k_{NETWORK_NAME}/SGD/s42_e100_b1024_wd5e-4/
-```
-
 ### Evaluate Models
 
 Run the following command lines to evaluate models:
@@ -150,9 +141,7 @@ python scripts/eval.py \
 
 ### Results
 
-| Network          | Batch Size | Valid ACC / NLL / cNLL | Train Runtime        | Misc. |
-| :-               | :-:        | :-:                    | :-:                  | :-:   |
-| R18-BN-ReLU      | 256        | 70.34 / 1.208 / 1.202  | 4.3 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220208185023.log) |
-|                  | 1024       | 70.61 / 1.189 / 1.188  | 3.8 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220208150009.log) |
-| R50-BN-ReLU      | 256        | 76.70 / 0.926 / 0.912  | 8.9 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220208213558.log) |
-|                  | 1024       | 76.93 / 0.911 / 0.905  | 7.0 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220208143658.log) |
+| Network          | Batch Size | Base LR | Valid ACC / NLL / cNLL | Train Runtime        | Misc. |
+| :-               | :-:        | :-:     | :-:                    | :-:                  | :-:   |
+| R18-BN-ReLU      | 256        | 0.1     | 70.45 / 1.210 / 1.204  | 5.1 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220212063003.log) |
+| R50-BN-ReLU      | 256        | 0.1     | 76.78 / 0.927 / 0.913  | 8.9 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220212113453.log) |
