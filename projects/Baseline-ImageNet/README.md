@@ -143,5 +143,7 @@ python scripts/eval.py \
 
 | Network          | Batch Size | Base LR | Valid ACC / NLL / cNLL | Train Runtime        | Misc. |
 | :-               | :-:        | :-:     | :-:                    | :-:                  | :-:   |
+| VGG16-ReLU       | 256        | 0.01    | 72.32 / 1.114 / 1.104  | 15.8 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k/20220212202852.log) |
+| VGG16-BN-ReLU    | 256        | 0.01    | 72.65 / 1.098 / 1.084  | 19.3 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k/20220213124035.log) |
 | R18-BN-ReLU      | 256        | 0.1     | 70.45 / 1.210 / 1.204  | 5.1 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220212063003.log) |
 | R50-BN-ReLU      | 256        | 0.1     | 76.78 / 0.927 / 0.913  | 8.9 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220212113453.log) |
