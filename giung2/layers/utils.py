@@ -49,6 +49,13 @@ def get_norm2d_layers(cfg, name: str):
             epsilon  = cfg.MODEL.BATCH_NORMALIZATION.EPSILON,
         )
 
+    if name == 'GroupNorm2d':
+        return functools.partial(
+            GroupNorm2d,
+            num_groups = cfg.MODEL.GROUP_NORMALIZATION.NUM_GROUPS,
+            epsilon    = cfg.MODEL.GROUP_NORMALIZATION.EPSILON,
+        )
+
     if name == 'FilterResponseNorm2d':
         return functools.partial(
             FilterResponseNorm2d,

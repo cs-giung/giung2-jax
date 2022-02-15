@@ -117,6 +117,13 @@ _C.MODEL.BATCH_NORMALIZATION.MOMENTUM = 0.9
 _C.MODEL.BATCH_NORMALIZATION.EPSILON = 1e-5
 
 # ---------------------------------------------------------------------- #
+# Group Normalization
+# ---------------------------------------------------------------------- #
+_C.MODEL.GROUP_NORMALIZATION = CfgNode()
+_C.MODEL.GROUP_NORMALIZATION.NUM_GROUPS = 32
+_C.MODEL.GROUP_NORMALIZATION.EPSILON = 1e-5
+
+# ---------------------------------------------------------------------- #
 # Filter Response Normalization
 # ---------------------------------------------------------------------- #
 _C.MODEL.FILTER_RESPONSE_NORMALIZATION = CfgNode()
