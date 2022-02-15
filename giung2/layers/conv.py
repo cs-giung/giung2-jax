@@ -80,7 +80,7 @@ class Conv2d_WeightStandardization(nn.Module):
         ]
         w = jnp.asarray(self.param('w', self.w_init, w_shape), x.dtype)
         w = w - jnp.mean(w, axis=(0, 1, 2,))
-        w = w / jnp.std(w, axis=(0, 1, 2,) + 1e-5)
+        w = w / (jnp.std(w, axis=(0, 1, 2,)) + 1e-5)
         y = jax.lax.conv_general_dilated(
             x, w, (self.stride, self.stride,), padding,
             lhs_dilation=(1,1,), rhs_dilation=(1,1,),
