@@ -84,7 +84,7 @@ def get_conv2d_layers(cfg, name, use_bias=False):
     if name == 'Conv2d_WeightStandardization':
         return functools.partial(
             Conv2d_WeightStandardization,
-            uses_bias = use_bias,
+            use_bias = use_bias,
         )
 
     if name == 'Conv2d_BatchEnsemble':
