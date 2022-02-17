@@ -113,15 +113,21 @@ _C.MODEL.CLASSIFIER.SOFTMAX_CLASSIFIER.LINEAR_LAYERS = 'Linear'
 # Batch Normalization
 # ---------------------------------------------------------------------- #
 _C.MODEL.BATCH_NORMALIZATION = CfgNode()
-_C.MODEL.BATCH_NORMALIZATION.MOMENTUM = 0.9
 _C.MODEL.BATCH_NORMALIZATION.EPSILON = 1e-5
+_C.MODEL.BATCH_NORMALIZATION.MOMENTUM = 0.9
+
+# ---------------------------------------------------------------------- #
+# Layer Normalization
+# ---------------------------------------------------------------------- #
+_C.MODEL.LAYER_NORMALIZATION = CfgNode()
+_C.MODEL.LAYER_NORMALIZATION.EPSILON = 1e-5
 
 # ---------------------------------------------------------------------- #
 # Group Normalization
 # ---------------------------------------------------------------------- #
 _C.MODEL.GROUP_NORMALIZATION = CfgNode()
-_C.MODEL.GROUP_NORMALIZATION.NUM_GROUPS = 32
 _C.MODEL.GROUP_NORMALIZATION.EPSILON = 1e-5
+_C.MODEL.GROUP_NORMALIZATION.NUM_GROUPS = 32
 
 # ---------------------------------------------------------------------- #
 # Filter Response Normalization

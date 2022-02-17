@@ -13,6 +13,7 @@ Dtype = Any
 __all__ = [
     "Identity",
     "BatchNorm2d",
+    "LayerNorm2d",
     "GroupNorm2d",
     "FilterResponseNorm2d",
 ]
@@ -57,6 +58,34 @@ class BatchNorm2d(nn.Module):
 
         y = x - jnp.reshape(mean, (1, 1, 1, -1,))
         y = jnp.multiply(y, jnp.reshape(jax.lax.rsqrt(var + self.epsilon), (1, 1, 1, -1,)))
+
+        w = jnp.asarray(self.param('w', self.w_init, (x.shape[-1],)), x.dtype)
+        b = jnp.asarray(self.param('b', self.b_init, (x.shape[-1],)), x.dtype)
+        y = jnp.multiply(y, jnp.reshape(w, (1, 1, 1, -1,)))
+        y = jnp.add(y, jnp.reshape(b, (1, 1, 1, -1,)))
+        return y
+
+
+class LayerNorm2d(nn.Module):
+    epsilon: float = 1e-5
+    w_init: Callable[[PRNGKey, Shape, Dtype], Array] = jax.nn.initializers.ones
+    b_init: Callable[[PRNGKey, Shape, Dtype], Array] = jax.nn.initializers.zeros
+
+    @nn.compact
+    def __call__(self, x, **kwargs):
+        """
+        Args:
+            x (Array): An input array with shape [N, H, W, C,].
+        
+        Returns:
+            y (Array): An output array with shape [N, H, W, C,].
+        """
+        mean = jnp.mean(x, (1, 2, 3,))
+        sq_mean = jnp.mean(jax.lax.square(x), (1, 2, 3,))
+        var = jnp.maximum(0., sq_mean - jax.lax.square(mean))
+
+        y = x - jnp.reshape(mean, (-1, 1, 1, 1,))
+        y = jnp.multiply(y, jnp.reshape(jax.lax.rsqrt(var + self.epsilon), (-1, 1, 1, 1,)))
 
         w = jnp.asarray(self.param('w', self.w_init, (x.shape[-1],)), x.dtype)
         b = jnp.asarray(self.param('b', self.b_init, (x.shape[-1],)), x.dtype)
