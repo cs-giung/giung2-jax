@@ -25,6 +25,8 @@ def build_backbone(cfg: CfgNode) -> nn.Module:
         backbone = build_vggnet_backbone(cfg)
     elif name == 'LeNet':
         backbone = build_lenet_backbone(cfg)
+    elif name == 'ViT':
+        backbone = build_vit_backbone(cfg)
     else:
         raise NotImplementedError(
             f'Unknown cfg.MODEL.BACKBONE.NAME: {name}'
