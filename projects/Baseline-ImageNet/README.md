@@ -149,4 +149,5 @@ python scripts/eval.py \
 |                  | 1024       | 0.4     | 70.53 / 1.184 / 1.183  | 4.2 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220214093712.log) |
 | R50-BN-ReLU      | 256        | 0.1     | 76.78 / 0.927 / 0.913  | 8.9 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220212113453.log) |
 |                  | 1024       | 0.4     | 76.86 / 0.909 / 0.903  | 7.0 hrs. (8 TPUv3)   | [log](./scripts/logs/ImageNet1k/20220214135046.log) |
-| R101-BN-ReLU     | 256        | 0.1     | 78.72 / 0.845 / 0.823  | 13.1 hrs. (8 TPUv3) | [log](./scripts/logs/ImageNet1k/20220215155340.log) |
+| R101-BN-ReLU     | 256        | 0.1     | 78.72 / 0.845 / 0.823  | 13.1 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k/20220215155340.log) |
+| R152-BN-ReLU     | 256        | 0.1     | 79.39 / 0.825 / 0.799  | 18.7 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k/20220216162527.log) |

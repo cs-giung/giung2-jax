@@ -1,0 +1,141 @@
+[2022-02-16 16:25:27,439][INFO] Environments:
+------------  -------------------------------------------------------------
+sys.platform  linux
+Python        3.8.10 (default, Nov 26 2021, 20:14:08) [GCC 9.3.0]
+JAX           0.2.28 @/home/giung/.local/lib/python3.8/site-packages/jax
+jaxlib        0.1.76 @/home/giung/.local/lib/python3.8/site-packages/jaxlib
+Flax          0.4.0 @/home/giung/.local/lib/python3.8/site-packages/flax
+Optax         0.1.1 @/home/giung/.local/lib/python3.8/site-packages/optax
+------------  -------------------------------------------------------------
+
+[2022-02-16 16:25:27,439][INFO] Command line arguments:
+Namespace(batch_size=256, config_file='./configs/ImageNet1k_R152-BN-ReLU_SGD.yaml', keep_every_n_checkpoints=None, learning_rate=0.1, num_epochs=100, num_warmup_epochs=5, opts=[], output_dir='./outputs/ImageNet1k_R152-BN-ReLU/SGD/s42_e100_b256_wd1e-4_8TPUv3', seed=42, weight_decay=0.0001)
+
+[2022-02-16 16:25:27,439][INFO] Using a random seed 42
+
+[2022-02-16 16:25:27,696][INFO] Unable to initialize backend 'tpu_driver': NOT_FOUND: Unable to find driver in registry given worker: 
+[2022-02-16 16:25:27,696][INFO] Unable to initialize backend 'gpu': NOT_FOUND: Could not find registered platform with name: "cuda". Available platform names are: TPU Interpreter Host
+[2022-02-16 16:26:47,510][INFO] Load dataset info from /home/giung/tensorflow_datasets/imagenet2012/5.1.0
+[2022-02-16 16:26:48,174][INFO] Found no checkpoint files in outputs/ImageNet1k_R152-BN-ReLU/SGD/s42_e100_b256_wd1e-4_8TPUv3
+[2022-02-16 16:26:48,301][INFO] Constructing tf.data.Dataset imagenet2012 for split train[0:1281167], from /home/giung/tensorflow_datasets/imagenet2012/5.1.0
+[2022-02-16 16:26:50,258][INFO] Constructing tf.data.Dataset imagenet2012 for split validation[0:50000], from /home/giung/tensorflow_datasets/imagenet2012/5.1.0
+[2022-02-16 17:30:22,297][INFO] [Epoch   1/100] trn/acc1 2.37e-02, trn/loss 1.73e+01, trn/loss_ce 6.23e+00, trn/loss_wd 1.11e+05, trn/lr 1.00e-02
+[2022-02-16 17:31:20,143][INFO] [Epoch   1/100] Validation: val/acc1 0.0704, val/loss_ce 5.3815
+[2022-02-16 17:42:00,691][INFO] [Epoch   2/100] trn/acc1 1.36e-01, trn/loss 1.38e+01, trn/loss_ce 4.61e+00, trn/loss_wd 9.20e+04, trn/lr 3.00e-02
+[2022-02-16 17:52:38,523][INFO] [Epoch   3/100] trn/acc1 2.52e-01, trn/loss 1.02e+01, trn/loss_ce 3.71e+00, trn/loss_wd 6.44e+04, trn/lr 5.00e-02
+[2022-02-16 18:03:16,378][INFO] [Epoch   4/100] trn/acc1 3.26e-01, trn/loss 7.19e+00, trn/loss_ce 3.23e+00, trn/loss_wd 3.96e+04, trn/lr 7.00e-02
+[2022-02-16 18:13:54,258][INFO] [Epoch   5/100] trn/acc1 3.68e-01, trn/loss 5.31e+00, trn/loss_ce 2.97e+00, trn/loss_wd 2.34e+04, trn/lr 9.00e-02
+[2022-02-16 18:24:32,122][INFO] [Epoch   6/100] trn/acc1 3.98e-01, trn/loss 4.38e+00, trn/loss_ce 2.80e+00, trn/loss_wd 1.58e+04, trn/lr 1.00e-01
+[2022-02-16 18:35:10,000][INFO] [Epoch   7/100] trn/acc1 4.22e-01, trn/loss 3.97e+00, trn/loss_ce 2.66e+00, trn/loss_wd 1.31e+04, trn/lr 9.99e-02
+[2022-02-16 18:45:47,924][INFO] [Epoch   8/100] trn/acc1 4.41e-01, trn/loss 3.79e+00, trn/loss_ce 2.56e+00, trn/loss_wd 1.23e+04, trn/lr 9.98e-02
+[2022-02-16 18:56:25,825][INFO] [Epoch   9/100] trn/acc1 4.54e-01, trn/loss 3.69e+00, trn/loss_ce 2.48e+00, trn/loss_wd 1.20e+04, trn/lr 9.97e-02
+[2022-02-16 19:07:03,762][INFO] [Epoch  10/100] trn/acc1 4.66e-01, trn/loss 3.63e+00, trn/loss_ce 2.43e+00, trn/loss_wd 1.21e+04, trn/lr 9.94e-02
+[2022-02-16 19:07:10,724][INFO] [Epoch  10/100] Validation: val/acc1 0.5068, val/loss_ce 2.1453
+[2022-02-16 19:17:58,595][INFO] [Epoch  11/100] trn/acc1 4.75e-01, trn/loss 3.59e+00, trn/loss_ce 2.38e+00, trn/loss_wd 1.22e+04, trn/lr 9.92e-02
+[2022-02-16 19:28:36,639][INFO] [Epoch  12/100] trn/acc1 4.82e-01, trn/loss 3.56e+00, trn/loss_ce 2.34e+00, trn/loss_wd 1.22e+04, trn/lr 9.88e-02
+[2022-02-16 19:39:14,628][INFO] [Epoch  13/100] trn/acc1 4.87e-01, trn/loss 3.54e+00, trn/loss_ce 2.31e+00, trn/loss_wd 1.23e+04, trn/lr 9.85e-02
+[2022-02-16 19:49:52,584][INFO] [Epoch  14/100] trn/acc1 4.92e-01, trn/loss 3.52e+00, trn/loss_ce 2.28e+00, trn/loss_wd 1.24e+04, trn/lr 9.80e-02
+[2022-02-16 20:00:30,637][INFO] [Epoch  15/100] trn/acc1 4.96e-01, trn/loss 3.50e+00, trn/loss_ce 2.26e+00, trn/loss_wd 1.24e+04, trn/lr 9.76e-02
+[2022-02-16 20:11:09,055][INFO] [Epoch  16/100] trn/acc1 5.00e-01, trn/loss 3.49e+00, trn/loss_ce 2.24e+00, trn/loss_wd 1.25e+04, trn/lr 9.70e-02
+[2022-02-16 20:21:47,056][INFO] [Epoch  17/100] trn/acc1 5.05e-01, trn/loss 3.47e+00, trn/loss_ce 2.22e+00, trn/loss_wd 1.25e+04, trn/lr 9.64e-02
+[2022-02-16 20:32:25,069][INFO] [Epoch  18/100] trn/acc1 5.07e-01, trn/loss 3.45e+00, trn/loss_ce 2.20e+00, trn/loss_wd 1.25e+04, trn/lr 9.58e-02
+[2022-02-16 20:43:03,094][INFO] [Epoch  19/100] trn/acc1 5.10e-01, trn/loss 3.44e+00, trn/loss_ce 2.19e+00, trn/loss_wd 1.25e+04, trn/lr 9.51e-02
+[2022-02-16 20:53:41,169][INFO] [Epoch  20/100] trn/acc1 5.13e-01, trn/loss 3.43e+00, trn/loss_ce 2.18e+00, trn/loss_wd 1.25e+04, trn/lr 9.44e-02
+[2022-02-16 20:53:48,323][INFO] [Epoch  20/100] Validation: val/acc1 0.5650, val/loss_ce 1.8529
+[2022-02-16 21:04:36,012][INFO] [Epoch  21/100] trn/acc1 5.15e-01, trn/loss 3.41e+00, trn/loss_ce 2.16e+00, trn/loss_wd 1.25e+04, trn/lr 9.36e-02
+[2022-02-16 21:15:14,109][INFO] [Epoch  22/100] trn/acc1 5.18e-01, trn/loss 3.40e+00, trn/loss_ce 2.15e+00, trn/loss_wd 1.26e+04, trn/lr 9.27e-02
+[2022-02-16 21:25:52,160][INFO] [Epoch  23/100] trn/acc1 5.21e-01, trn/loss 3.39e+00, trn/loss_ce 2.13e+00, trn/loss_wd 1.25e+04, trn/lr 9.19e-02
+[2022-02-16 21:36:30,212][INFO] [Epoch  24/100] trn/acc1 5.23e-01, trn/loss 3.37e+00, trn/loss_ce 2.12e+00, trn/loss_wd 1.25e+04, trn/lr 9.09e-02
+[2022-02-16 21:47:08,299][INFO] [Epoch  25/100] trn/acc1 5.24e-01, trn/loss 3.37e+00, trn/loss_ce 2.11e+00, trn/loss_wd 1.25e+04, trn/lr 9.00e-02
+[2022-02-16 21:57:46,361][INFO] [Epoch  26/100] trn/acc1 5.26e-01, trn/loss 3.35e+00, trn/loss_ce 2.10e+00, trn/loss_wd 1.25e+04, trn/lr 8.89e-02
+[2022-02-16 22:08:24,414][INFO] [Epoch  27/100] trn/acc1 5.30e-01, trn/loss 3.34e+00, trn/loss_ce 2.09e+00, trn/loss_wd 1.25e+04, trn/lr 8.79e-02
+[2022-02-16 22:19:02,488][INFO] [Epoch  28/100] trn/acc1 5.31e-01, trn/loss 3.32e+00, trn/loss_ce 2.08e+00, trn/loss_wd 1.25e+04, trn/lr 8.68e-02
+[2022-02-16 22:29:40,557][INFO] [Epoch  29/100] trn/acc1 5.33e-01, trn/loss 3.31e+00, trn/loss_ce 2.06e+00, trn/loss_wd 1.24e+04, trn/lr 8.56e-02
+[2022-02-16 22:40:18,553][INFO] [Epoch  30/100] trn/acc1 5.35e-01, trn/loss 3.30e+00, trn/loss_ce 2.06e+00, trn/loss_wd 1.24e+04, trn/lr 8.45e-02
+[2022-02-16 22:40:25,578][INFO] [Epoch  30/100] Validation: val/acc1 0.5864, val/loss_ce 1.7257
+[2022-02-16 22:51:13,115][INFO] [Epoch  31/100] trn/acc1 5.38e-01, trn/loss 3.28e+00, trn/loss_ce 2.05e+00, trn/loss_wd 1.24e+04, trn/lr 8.32e-02
+[2022-02-16 23:01:51,050][INFO] [Epoch  32/100] trn/acc1 5.39e-01, trn/loss 3.27e+00, trn/loss_ce 2.03e+00, trn/loss_wd 1.23e+04, trn/lr 8.20e-02
+[2022-02-16 23:12:28,967][INFO] [Epoch  33/100] trn/acc1 5.41e-01, trn/loss 3.25e+00, trn/loss_ce 2.02e+00, trn/loss_wd 1.23e+04, trn/lr 8.07e-02
+[2022-02-16 23:23:06,934][INFO] [Epoch  34/100] trn/acc1 5.43e-01, trn/loss 3.24e+00, trn/loss_ce 2.01e+00, trn/loss_wd 1.23e+04, trn/lr 7.94e-02
+[2022-02-16 23:33:44,891][INFO] [Epoch  35/100] trn/acc1 5.45e-01, trn/loss 3.23e+00, trn/loss_ce 2.00e+00, trn/loss_wd 1.22e+04, trn/lr 7.80e-02
+[2022-02-16 23:44:22,917][INFO] [Epoch  36/100] trn/acc1 5.48e-01, trn/loss 3.21e+00, trn/loss_ce 1.99e+00, trn/loss_wd 1.22e+04, trn/lr 7.67e-02
+[2022-02-16 23:55:01,009][INFO] [Epoch  37/100] trn/acc1 5.50e-01, trn/loss 3.19e+00, trn/loss_ce 1.98e+00, trn/loss_wd 1.21e+04, trn/lr 7.52e-02
+[2022-02-17 00:05:39,023][INFO] [Epoch  38/100] trn/acc1 5.52e-01, trn/loss 3.18e+00, trn/loss_ce 1.97e+00, trn/loss_wd 1.21e+04, trn/lr 7.38e-02
+[2022-02-17 00:16:17,020][INFO] [Epoch  39/100] trn/acc1 5.54e-01, trn/loss 3.16e+00, trn/loss_ce 1.96e+00, trn/loss_wd 1.20e+04, trn/lr 7.23e-02
+[2022-02-17 00:26:55,008][INFO] [Epoch  40/100] trn/acc1 5.57e-01, trn/loss 3.14e+00, trn/loss_ce 1.95e+00, trn/loss_wd 1.19e+04, trn/lr 7.08e-02
+[2022-02-17 00:27:02,131][INFO] [Epoch  40/100] Validation: val/acc1 0.6129, val/loss_ce 1.6029
+[2022-02-17 00:37:49,544][INFO] [Epoch  41/100] trn/acc1 5.58e-01, trn/loss 3.12e+00, trn/loss_ce 1.94e+00, trn/loss_wd 1.19e+04, trn/lr 6.93e-02
+[2022-02-17 00:48:27,541][INFO] [Epoch  42/100] trn/acc1 5.61e-01, trn/loss 3.11e+00, trn/loss_ce 1.93e+00, trn/loss_wd 1.18e+04, trn/lr 6.78e-02
+[2022-02-17 00:59:05,530][INFO] [Epoch  43/100] trn/acc1 5.63e-01, trn/loss 3.09e+00, trn/loss_ce 1.91e+00, trn/loss_wd 1.18e+04, trn/lr 6.62e-02
+[2022-02-17 01:09:43,489][INFO] [Epoch  44/100] trn/acc1 5.66e-01, trn/loss 3.07e+00, trn/loss_ce 1.90e+00, trn/loss_wd 1.17e+04, trn/lr 6.47e-02
+[2022-02-17 01:20:21,509][INFO] [Epoch  45/100] trn/acc1 5.68e-01, trn/loss 3.05e+00, trn/loss_ce 1.89e+00, trn/loss_wd 1.16e+04, trn/lr 6.31e-02
+[2022-02-17 01:30:59,529][INFO] [Epoch  46/100] trn/acc1 5.71e-01, trn/loss 3.03e+00, trn/loss_ce 1.87e+00, trn/loss_wd 1.15e+04, trn/lr 6.15e-02
+[2022-02-17 01:41:37,527][INFO] [Epoch  47/100] trn/acc1 5.73e-01, trn/loss 3.01e+00, trn/loss_ce 1.86e+00, trn/loss_wd 1.15e+04, trn/lr 5.99e-02
+[2022-02-17 01:52:15,479][INFO] [Epoch  48/100] trn/acc1 5.75e-01, trn/loss 2.99e+00, trn/loss_ce 1.85e+00, trn/loss_wd 1.14e+04, trn/lr 5.82e-02
+[2022-02-17 02:02:53,353][INFO] [Epoch  49/100] trn/acc1 5.79e-01, trn/loss 2.96e+00, trn/loss_ce 1.83e+00, trn/loss_wd 1.13e+04, trn/lr 5.66e-02
+[2022-02-17 02:13:31,176][INFO] [Epoch  50/100] trn/acc1 5.80e-01, trn/loss 2.95e+00, trn/loss_ce 1.82e+00, trn/loss_wd 1.12e+04, trn/lr 5.50e-02
+[2022-02-17 02:13:38,465][INFO] [Epoch  50/100] Validation: val/acc1 0.6405, val/loss_ce 1.4810
+[2022-02-17 02:24:26,216][INFO] [Epoch  51/100] trn/acc1 5.84e-01, trn/loss 2.92e+00, trn/loss_ce 1.81e+00, trn/loss_wd 1.11e+04, trn/lr 5.33e-02
+[2022-02-17 02:35:04,060][INFO] [Epoch  52/100] trn/acc1 5.87e-01, trn/loss 2.90e+00, trn/loss_ce 1.79e+00, trn/loss_wd 1.10e+04, trn/lr 5.17e-02
+[2022-02-17 02:45:42,403][INFO] [Epoch  53/100] trn/acc1 5.90e-01, trn/loss 2.88e+00, trn/loss_ce 1.78e+00, trn/loss_wd 1.09e+04, trn/lr 5.00e-02
+[2022-02-17 02:56:20,317][INFO] [Epoch  54/100] trn/acc1 5.92e-01, trn/loss 2.85e+00, trn/loss_ce 1.77e+00, trn/loss_wd 1.08e+04, trn/lr 4.83e-02
+[2022-02-17 03:06:58,180][INFO] [Epoch  55/100] trn/acc1 5.95e-01, trn/loss 2.83e+00, trn/loss_ce 1.75e+00, trn/loss_wd 1.08e+04, trn/lr 4.67e-02
+[2022-02-17 03:17:36,111][INFO] [Epoch  56/100] trn/acc1 5.98e-01, trn/loss 2.80e+00, trn/loss_ce 1.74e+00, trn/loss_wd 1.07e+04, trn/lr 4.50e-02
+[2022-02-17 03:28:13,948][INFO] [Epoch  57/100] trn/acc1 6.01e-01, trn/loss 2.78e+00, trn/loss_ce 1.72e+00, trn/loss_wd 1.06e+04, trn/lr 4.34e-02
+[2022-02-17 03:38:51,862][INFO] [Epoch  58/100] trn/acc1 6.05e-01, trn/loss 2.75e+00, trn/loss_ce 1.71e+00, trn/loss_wd 1.04e+04, trn/lr 4.18e-02
+[2022-02-17 03:49:29,757][INFO] [Epoch  59/100] trn/acc1 6.08e-01, trn/loss 2.72e+00, trn/loss_ce 1.69e+00, trn/loss_wd 1.03e+04, trn/lr 4.01e-02
+[2022-02-17 04:00:07,671][INFO] [Epoch  60/100] trn/acc1 6.11e-01, trn/loss 2.69e+00, trn/loss_ce 1.67e+00, trn/loss_wd 1.02e+04, trn/lr 3.85e-02
+[2022-02-17 04:00:14,953][INFO] [Epoch  60/100] Validation: val/acc1 0.6700, val/loss_ce 1.3593
+[2022-02-17 04:11:02,161][INFO] [Epoch  61/100] trn/acc1 6.14e-01, trn/loss 2.67e+00, trn/loss_ce 1.66e+00, trn/loss_wd 1.01e+04, trn/lr 3.69e-02
+[2022-02-17 04:21:40,004][INFO] [Epoch  62/100] trn/acc1 6.19e-01, trn/loss 2.63e+00, trn/loss_ce 1.63e+00, trn/loss_wd 9.98e+03, trn/lr 3.53e-02
+[2022-02-17 04:32:18,236][INFO] [Epoch  63/100] trn/acc1 6.22e-01, trn/loss 2.61e+00, trn/loss_ce 1.62e+00, trn/loss_wd 9.87e+03, trn/lr 3.38e-02
+[2022-02-17 04:42:56,161][INFO] [Epoch  64/100] trn/acc1 6.26e-01, trn/loss 2.58e+00, trn/loss_ce 1.60e+00, trn/loss_wd 9.75e+03, trn/lr 3.22e-02
+[2022-02-17 04:53:34,172][INFO] [Epoch  65/100] trn/acc1 6.29e-01, trn/loss 2.55e+00, trn/loss_ce 1.59e+00, trn/loss_wd 9.62e+03, trn/lr 3.07e-02
+[2022-02-17 05:04:12,186][INFO] [Epoch  66/100] trn/acc1 6.33e-01, trn/loss 2.52e+00, trn/loss_ce 1.57e+00, trn/loss_wd 9.49e+03, trn/lr 2.92e-02
+[2022-02-17 05:14:50,095][INFO] [Epoch  67/100] trn/acc1 6.37e-01, trn/loss 2.48e+00, trn/loss_ce 1.55e+00, trn/loss_wd 9.36e+03, trn/lr 2.77e-02
+[2022-02-17 05:25:28,041][INFO] [Epoch  68/100] trn/acc1 6.41e-01, trn/loss 2.45e+00, trn/loss_ce 1.53e+00, trn/loss_wd 9.23e+03, trn/lr 2.62e-02
+[2022-02-17 05:36:05,950][INFO] [Epoch  69/100] trn/acc1 6.45e-01, trn/loss 2.42e+00, trn/loss_ce 1.51e+00, trn/loss_wd 9.11e+03, trn/lr 2.48e-02
+[2022-02-17 05:46:43,869][INFO] [Epoch  70/100] trn/acc1 6.49e-01, trn/loss 2.39e+00, trn/loss_ce 1.49e+00, trn/loss_wd 8.97e+03, trn/lr 2.33e-02
+[2022-02-17 05:46:50,960][INFO] [Epoch  70/100] Validation: val/acc1 0.7063, val/loss_ce 1.1927
+[2022-02-17 05:57:42,143][INFO] [Epoch  71/100] trn/acc1 6.54e-01, trn/loss 2.35e+00, trn/loss_ce 1.47e+00, trn/loss_wd 8.83e+03, trn/lr 2.20e-02
+[2022-02-17 06:08:20,083][INFO] [Epoch  72/100] trn/acc1 6.58e-01, trn/loss 2.32e+00, trn/loss_ce 1.45e+00, trn/loss_wd 8.69e+03, trn/lr 2.06e-02
+[2022-02-17 06:18:58,412][INFO] [Epoch  73/100] trn/acc1 6.63e-01, trn/loss 2.28e+00, trn/loss_ce 1.42e+00, trn/loss_wd 8.55e+03, trn/lr 1.93e-02
+[2022-02-17 06:29:36,353][INFO] [Epoch  74/100] trn/acc1 6.68e-01, trn/loss 2.24e+00, trn/loss_ce 1.40e+00, trn/loss_wd 8.41e+03, trn/lr 1.80e-02
+[2022-02-17 06:40:14,302][INFO] [Epoch  75/100] trn/acc1 6.73e-01, trn/loss 2.21e+00, trn/loss_ce 1.38e+00, trn/loss_wd 8.27e+03, trn/lr 1.68e-02
+[2022-02-17 06:50:52,246][INFO] [Epoch  76/100] trn/acc1 6.77e-01, trn/loss 2.17e+00, trn/loss_ce 1.36e+00, trn/loss_wd 8.13e+03, trn/lr 1.55e-02
+[2022-02-17 07:01:30,197][INFO] [Epoch  77/100] trn/acc1 6.83e-01, trn/loss 2.13e+00, trn/loss_ce 1.33e+00, trn/loss_wd 7.99e+03, trn/lr 1.44e-02
+[2022-02-17 07:12:08,121][INFO] [Epoch  78/100] trn/acc1 6.88e-01, trn/loss 2.09e+00, trn/loss_ce 1.31e+00, trn/loss_wd 7.84e+03, trn/lr 1.32e-02
+[2022-02-17 07:22:46,062][INFO] [Epoch  79/100] trn/acc1 6.93e-01, trn/loss 2.05e+00, trn/loss_ce 1.28e+00, trn/loss_wd 7.70e+03, trn/lr 1.21e-02
+[2022-02-17 07:33:23,985][INFO] [Epoch  80/100] trn/acc1 6.99e-01, trn/loss 2.01e+00, trn/loss_ce 1.26e+00, trn/loss_wd 7.56e+03, trn/lr 1.11e-02
+[2022-02-17 07:33:31,152][INFO] [Epoch  80/100] Validation: val/acc1 0.7402, val/loss_ce 1.0389
+[2022-02-17 07:44:18,490][INFO] [Epoch  81/100] trn/acc1 7.05e-01, trn/loss 1.97e+00, trn/loss_ce 1.23e+00, trn/loss_wd 7.42e+03, trn/lr 1.00e-02
+[2022-02-17 07:54:56,439][INFO] [Epoch  82/100] trn/acc1 7.10e-01, trn/loss 1.94e+00, trn/loss_ce 1.21e+00, trn/loss_wd 7.29e+03, trn/lr 9.07e-03
+[2022-02-17 08:05:34,779][INFO] [Epoch  83/100] trn/acc1 7.17e-01, trn/loss 1.89e+00, trn/loss_ce 1.18e+00, trn/loss_wd 7.15e+03, trn/lr 8.14e-03
+[2022-02-17 08:16:12,807][INFO] [Epoch  84/100] trn/acc1 7.23e-01, trn/loss 1.85e+00, trn/loss_ce 1.15e+00, trn/loss_wd 7.02e+03, trn/lr 7.26e-03
+[2022-02-17 08:26:50,935][INFO] [Epoch  85/100] trn/acc1 7.29e-01, trn/loss 1.81e+00, trn/loss_ce 1.12e+00, trn/loss_wd 6.90e+03, trn/lr 6.43e-03
+[2022-02-17 08:37:28,961][INFO] [Epoch  86/100] trn/acc1 7.36e-01, trn/loss 1.77e+00, trn/loss_ce 1.09e+00, trn/loss_wd 6.78e+03, trn/lr 5.64e-03
+[2022-02-17 08:48:06,998][INFO] [Epoch  87/100] trn/acc1 7.42e-01, trn/loss 1.73e+00, trn/loss_ce 1.06e+00, trn/loss_wd 6.66e+03, trn/lr 4.90e-03
+[2022-02-17 08:58:44,957][INFO] [Epoch  88/100] trn/acc1 7.48e-01, trn/loss 1.69e+00, trn/loss_ce 1.03e+00, trn/loss_wd 6.56e+03, trn/lr 4.21e-03
+[2022-02-17 09:09:22,940][INFO] [Epoch  89/100] trn/acc1 7.56e-01, trn/loss 1.65e+00, trn/loss_ce 1.00e+00, trn/loss_wd 6.46e+03, trn/lr 3.57e-03
+[2022-02-17 09:20:00,908][INFO] [Epoch  90/100] trn/acc1 7.62e-01, trn/loss 1.61e+00, trn/loss_ce 9.73e-01, trn/loss_wd 6.37e+03, trn/lr 2.99e-03
+[2022-02-17 09:20:08,017][INFO] [Epoch  90/100] Validation: val/acc1 0.7796, val/loss_ce 0.8855
+[2022-02-17 09:30:56,020][INFO] [Epoch  91/100] trn/acc1 7.69e-01, trn/loss 1.57e+00, trn/loss_ce 9.46e-01, trn/loss_wd 6.29e+03, trn/lr 2.45e-03
+[2022-02-17 09:31:03,205][INFO] [Epoch  91/100] Validation: val/acc1 0.7803, val/loss_ce 0.8707
+[2022-02-17 09:41:50,447][INFO] [Epoch  92/100] trn/acc1 7.75e-01, trn/loss 1.54e+00, trn/loss_ce 9.21e-01, trn/loss_wd 6.22e+03, trn/lr 1.96e-03
+[2022-02-17 09:41:57,640][INFO] [Epoch  92/100] Validation: val/acc1 0.7838, val/loss_ce 0.8633
+[2022-02-17 09:52:47,827][INFO] [Epoch  93/100] trn/acc1 7.80e-01, trn/loss 1.51e+00, trn/loss_ce 8.93e-01, trn/loss_wd 6.16e+03, trn/lr 1.53e-03
+[2022-02-17 09:52:55,150][INFO] [Epoch  93/100] Validation: val/acc1 0.7868, val/loss_ce 0.8494
+[2022-02-17 10:03:45,908][INFO] [Epoch  94/100] trn/acc1 7.86e-01, trn/loss 1.48e+00, trn/loss_ce 8.71e-01, trn/loss_wd 6.11e+03, trn/lr 1.15e-03
+[2022-02-17 10:03:53,164][INFO] [Epoch  94/100] Validation: val/acc1 0.7894, val/loss_ce 0.8401
+[2022-02-17 10:14:40,596][INFO] [Epoch  95/100] trn/acc1 7.90e-01, trn/loss 1.46e+00, trn/loss_ce 8.55e-01, trn/loss_wd 6.07e+03, trn/lr 8.27e-04
+[2022-02-17 10:14:47,723][INFO] [Epoch  95/100] Validation: val/acc1 0.7895, val/loss_ce 0.8396
+[2022-02-17 10:25:34,899][INFO] [Epoch  96/100] trn/acc1 7.95e-01, trn/loss 1.44e+00, trn/loss_ce 8.33e-01, trn/loss_wd 6.05e+03, trn/lr 5.55e-04
+[2022-02-17 10:25:42,164][INFO] [Epoch  96/100] Validation: val/acc1 0.7916, val/loss_ce 0.8334
+[2022-02-17 10:36:29,506][INFO] [Epoch  97/100] trn/acc1 7.98e-01, trn/loss 1.43e+00, trn/loss_ce 8.23e-01, trn/loss_wd 6.03e+03, trn/lr 3.37e-04
+[2022-02-17 10:36:36,547][INFO] [Epoch  97/100] Validation: val/acc1 0.7926, val/loss_ce 0.8291
+[2022-02-17 10:47:23,626][INFO] [Epoch  98/100] trn/acc1 8.00e-01, trn/loss 1.42e+00, trn/loss_ce 8.15e-01, trn/loss_wd 6.02e+03, trn/lr 1.73e-04
+[2022-02-17 10:47:31,022][INFO] [Epoch  98/100] Validation: val/acc1 0.7930, val/loss_ce 0.8246
+[2022-02-17 10:58:18,238][INFO] [Epoch  99/100] trn/acc1 8.01e-01, trn/loss 1.41e+00, trn/loss_ce 8.06e-01, trn/loss_wd 6.01e+03, trn/lr 6.38e-05
+[2022-02-17 10:58:25,596][INFO] [Epoch  99/100] Validation: val/acc1 0.7937, val/loss_ce 0.8255
+[2022-02-17 11:09:09,012][INFO] [Epoch 100/100] trn/acc1 8.02e-01, trn/loss 1.41e+00, trn/loss_ce 8.04e-01, trn/loss_wd 6.01e+03, trn/lr 9.12e-06
+[2022-02-17 11:09:16,206][INFO] [Epoch 100/100] Validation: val/acc1 0.7939, val/loss_ce 0.8253
