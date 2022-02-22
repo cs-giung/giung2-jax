@@ -127,7 +127,7 @@ python scripts/train.py \
     --config_file ./configs/ImageNet1k_{NETWORK_NAME}_SGD.yaml \
     --num_epochs 100 --num_warmup_epochs 5 \
     --batch_size 256 --learning_rate 0.1 --weight_decay 1e-4 \
-    --seed 42 --output_dir ./outputs/ImageNet1k_{NETWORK_NAME}/SGD/s42_e100_b256_wd5e-4/
+    --seed 42 --output_dir ./outputs/ImageNet1k_{NETWORK_NAME}/SGD/s42_e100_b256_wd1e-4/
 ```
 
 ### Evaluate Models
@@ -136,7 +136,7 @@ Run the following command lines to evaluate models:
 ```
 python scripts/eval.py \
     --config_file ./configs/ImageNet1k_{NETWORK_NAME}_SGD.yaml \
-    --weight_file ./outputs/ImageNet1k_{NETWORK_NAME}/SGD/s42_e100_b{BATCH_SIZE}_wd5e-4/best_acc1
+    --weight_file ./outputs/ImageNet1k_{NETWORK_NAME}/SGD/s42_e100_b{BATCH_SIZE}_wd1e-4/best_acc1
 ```
 
 ### Results
