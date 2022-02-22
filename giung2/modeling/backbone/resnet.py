@@ -20,7 +20,7 @@ class IdentityShortcut(nn.Module):
     def __call__(self, x, **kwargs):
         pad_offset = self.expansion * self.channels - x.shape[-1]
         return jnp.pad(
-            array           = x[:, ::2, ::2, :],
+            array           = x[:, ::self.stride, ::self.stride, :],
             pad_width       = ((0, 0), (0, 0), (0, 0), (0, pad_offset)),
             mode            = 'constant',
             constant_values = 0,
