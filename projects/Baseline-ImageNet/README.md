@@ -4,13 +4,6 @@ Here, we use the following architectures:
 * [VGGNet (Simonyan and Zisserman, 2015)](https://arxiv.org/abs/1409.1556) : VGG16,
 * [ResNet (He et al., 2016)](https://arxiv.org/abs/1512.03385) : R18, R50.
 
-Here, we have some modifications for our experiments on downsampled datasets using those architectures:
-1. We also test VGG architectures with [Batch Normalization (Ioffe and Szegedy, 2015)](https://arxiv.org/abs/1502.03167) layers,
-
-    ```python
-    MODEL.BACKBONE.VGGNET.NORM_LAYERS = "BatchNorm2d" # "NONE"
-    ```
-
 ## ImageNet
 
 In summary,
