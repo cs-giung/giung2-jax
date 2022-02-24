@@ -2,7 +2,7 @@
 
 Here, we use the following architectures:
 * [VGGNet (Simonyan and Zisserman, 2015)](https://arxiv.org/abs/1409.1556) : VGG11, VGG13, VGG16, VGG19,
-* [ResNet (He et al., 2016)](https://arxiv.org/abs/1512.03385) : R18, R50.
+* [ResNet (He et al., 2016)](https://arxiv.org/abs/1512.03385) : R18, R34, R50, R101, R152.
 
 Note that the original architectures do not consider downsampled variants of the ImageNet dataset.
 Here, we have some modifications for our experiments on downsampled datasets using those architectures:
@@ -66,7 +66,10 @@ python scripts/eval.py \
 |                  | 99.98 / 0.007 / 0.018  | 65.84 / 1.488 / 1.464  | 65.44 / 1.529 / 1.499  | 1.1 hrs. (2 RTX3090) | [log](./scripts/logs/TIN200/20220205132411.log) |
 |                  | 99.98 / 0.006 / 0.018  | 66.48 / 1.480 / 1.439  | 65.51 / 1.547 / 1.495  | 0.8 hrs. (4 RTX3090) | [log](./scripts/logs/TIN200/20220205121009.log) |
 |                  | 99.98 / 0.005 / 0.022  | 66.07 / 1.544 / 1.459  | 65.52 / 1.581 / 1.486  | 0.6 hrs. (8 TPUv3)   | [log](./scripts/logs/TIN200/20220206063249.log) |
+| R34-BN-ReLU      | 99.97 / 0.002 / 0.010  | 67.58 / 1.500 / 1.416  | 66.88 / 1.558 / 1.462  | 0.8 hrs. (8 TPUv3)   | [log](./scripts/logs/TIN200/20220224152246.log) |
 | R50-BN-ReLU      | 99.98 / 0.005 / 0.008  | 69.73 / 1.305 / 1.300  | 69.20 / 1.326 / 1.321  | 5.7 hrs. (1 RTX3090) | [log](./scripts/logs/TIN200/20220206151219.log) |
 |                  | 99.98 / 0.004 / 0.009  | 69.53 / 1.299 / 1.288  | 69.16 / 1.342 / 1.327  | 3.5 hrs. (2 RTX3090) | [log](./scripts/logs/TIN200/20220205132437.log) |
 |                  | 99.98 / 0.003 / 0.010  | 70.10 / 1.309 / 1.276  | 69.22 / 1.353 / 1.315  | 2.2 hrs. (4 RTX3090) | [log](./scripts/logs/TIN200/20220205120813.log) |
 |                  | 99.97 / 0.004 / 0.016  | 69.80 / 1.343 / 1.265  | 69.36 / 1.378 / 1.296  | 1.1 hrs. (8 TPUv3)   | [log](./scripts/logs/TIN200/20220206071326.log) |
+| R101-BN-ReLU     | 99.97 / 0.003 / 0.017  | 71.18 / 1.321 / 1.218  | 70.81 / 1.362 / 1.251  | 1.6 hrs. (8 TPUv3)   | [log](./scripts/logs/TIN200/20220224130549.log) |
+| R152-BN-ReLU     | 99.98 / 0.002 / 0.014  | 71.66 / 1.294 / 1.197  | 70.81 / 1.346 / 1.231  | 2.0 hrs. (8 TPUv3)   | [log](./scripts/logs/TIN200/20220224104514.log) |
