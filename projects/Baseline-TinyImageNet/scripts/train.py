@@ -193,7 +193,6 @@ if __name__ == '__main__':
         var_dict = init({'params': key}, jnp.ones(im_shape, im_dtype))
         return var_dict
 
-    USEIMAGENET = False
     if cfg.DATASETS.NAME in ['TinyImageNet200',]:
         image_shape = (1, 64, 64, 3,)
         num_classes = 200
@@ -203,10 +202,6 @@ if __name__ == '__main__':
     elif cfg.DATASETS.NAME in ['ImageNet1k_x64',]:
         image_shape = (1, 64, 64, 3,)
         num_classes = 1000
-    elif cfg.DATASETS.NAME in ['ImageNet1k',]:
-        image_shape = (1, 224, 224, 3,)
-        num_classes = 1000
-        USEIMAGENET = True
     else:
         raise NotImplementedError
 
@@ -214,11 +209,7 @@ if __name__ == '__main__':
     var_dict = initialize_model(rng, model, image_shape, im_dtype)
 
     # build dataset
-    if USEIMAGENET:
-        from scripts.input_pipeline import build_imagenet_dataloader
-        dataloaders = build_imagenet_dataloader(batch_size=[args.batch_size, 200, 200])
-    else:
-        dataloaders = build_dataloaders(cfg, batch_size=[args.batch_size, 200, 200])
+    dataloaders = build_dataloaders(cfg, batch_size=[args.batch_size, 200, 200])
     trn_steps_per_epoch = dataloaders['trn_steps_per_epoch']
     val_steps_per_epoch = dataloaders['val_steps_per_epoch']
 
@@ -281,14 +272,11 @@ if __name__ == '__main__':
         rng, data_rng = jax.random.split(rng)
 
         trn_metric = []
-        if not USEIMAGENET:
-            trn_loader = dataloaders['dataloader'](rng=data_rng)
-            trn_loader = jax_utils.prefetch_to_device(trn_loader, size=2)
+        trn_loader = dataloaders['dataloader'](rng=data_rng)
+        trn_loader = jax_utils.prefetch_to_device(trn_loader, size=2)
         for batch_idx, batch in enumerate(trn_loader, start=1):
             state, metrics, dropout_rng = step_trn(state, batch, dropout_rng=dropout_rng)
             trn_metric.append(metrics)
-            if batch_idx == trn_steps_per_epoch:
-                break
 
         trn_metric = get_metrics(trn_metric)
         summarized = {f'trn/{k}': v for k, v in jax.tree_map(lambda e: e.mean(), trn_metric).items()}
@@ -322,14 +310,11 @@ if __name__ == '__main__':
             or epoch_idx >= int(args.num_epochs * 0.9)):
 
             val_metric = []
-            if not USEIMAGENET:
-                val_loader = dataloaders['val_loader'](rng=None)
-                val_loader = jax_utils.prefetch_to_device(val_loader, size=2)
+            val_loader = dataloaders['val_loader'](rng=None)
+            val_loader = jax_utils.prefetch_to_device(val_loader, size=2)
             for batch_idx, batch in enumerate(val_loader, start=1):
                 metrics = step_val(state, batch)
                 val_metric.append(metrics)
-                if batch_idx == val_steps_per_epoch:
-                    break
 
             val_metric = get_metrics(val_metric)
             summarized = {f'val/{k}': v for k, v in jax.tree_map(lambda e: e.mean(), val_metric).items()}
