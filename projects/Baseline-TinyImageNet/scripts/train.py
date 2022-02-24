@@ -256,12 +256,6 @@ if __name__ == '__main__':
     best_acc1_path = os.path.join(args.output_dir, 'best_acc1')
     best_loss_path = os.path.join(args.output_dir, 'best_loss')
 
-    if USEIMAGENET:
-        trn_loader = dataloaders['dataloader'](rng=rng)
-        trn_loader = jax_utils.prefetch_to_device(trn_loader, size=2)
-        val_loader = dataloaders['val_loader'](rng=None)
-        val_loader = jax_utils.prefetch_to_device(val_loader, size=2)
-
     state = jax_utils.replicate(state)
     dropout_rng = jax.random.split(rng, jax.local_device_count())
     for epoch_idx in range(epoch_offset + 1, args.num_epochs + 1):
