@@ -177,8 +177,12 @@ def build_dataloaders(
     tst_labels = np.load(os.path.join(cfg.DATASETS.ROOT, f'{name}/test_labels.npy'))
 
     # validation split
-    val_images, val_labels = trn_images[val_indices], trn_labels[val_indices]
-    trn_images, trn_labels = trn_images[trn_indices], trn_labels[trn_indices]
+    if val_indices:
+        val_images, val_labels = trn_images[val_indices], trn_labels[val_indices]
+        trn_images, trn_labels = trn_images[trn_indices], trn_labels[trn_indices]
+    else:
+        val_images, val_labels = tst_images, tst_labels
+        trn_images, trn_labels = trn_images[trn_indices], trn_labels[trn_indices]
 
     # specify mini-batch settings
     if isinstance(batch_size, int):
