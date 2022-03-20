@@ -35,7 +35,7 @@ In summary,
 Run the following command lines to train models:
 ```
 python scripts/train.py \
-    --config_file ./configs/TIN200_{NETWORK_NAME}_SGD.yaml \
+    --config_file ./configs/TIN200_{NETWORK_NAME}.yaml \
     --num_epochs 100 --num_warmup_epochs 5 \
     --batch_size 128 --learning_rate 0.1 --weight_decay 5e-4 \
     --seed 42 --output_dir ./outputs/TIN200_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/
@@ -46,7 +46,7 @@ python scripts/train.py \
 Run the following command lines to evaluate models:
 ```
 python scripts/eval.py \
-    --config_file ./configs/TIN200_{NETWORK_NAME}_SGD.yaml \
+    --config_file ./configs/TIN200_{NETWORK_NAME}.yaml \
     --weight_file ./outputs/TIN200_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/best_acc1
 ```
 
