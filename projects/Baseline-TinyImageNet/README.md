@@ -2,7 +2,8 @@
 
 Here, we use the following architectures:
 * [VGGNet (Simonyan and Zisserman, 2015)](https://arxiv.org/abs/1409.1556) : VGG11, VGG13, VGG16, VGG19,
-* [ResNet (He et al., 2016)](https://arxiv.org/abs/1512.03385) : R18, R34, R50, R101, R152.
+* [ResNet (He et al., 2016)](https://arxiv.org/abs/1512.03385) : R18, R34, R50, R101, R152,
+* [WideResNet (Zagoruyko and Komodakis, 2016)](https://arxiv.org/abs/1605.07146) : WRN28x10.
 
 Note that the original architectures do not consider downsampled variants of the ImageNet dataset.
 Here, we have some modifications for our experiments on downsampled datasets using those architectures:
@@ -73,3 +74,75 @@ python scripts/eval.py \
 |                  | 99.98 / 0.003 / 0.010  | 70.10 / 1.309 / 1.276  | 69.22 / 1.353 / 1.315  | 2.2 hrs. (4 RTX3090) | [log](./scripts/logs/TIN200/20220205120813.log) |
 | R101-BN-ReLU     | 99.97 / 0.003 / 0.017  | 71.18 / 1.321 / 1.218  | 70.81 / 1.362 / 1.251  | 1.6 hrs. (8 TPUv3)   | [log](./scripts/logs/TIN200/20220224130549.log) |
 | R152-BN-ReLU     | 99.98 / 0.002 / 0.014  | 71.66 / 1.294 / 1.197  | 70.81 / 1.346 / 1.231  | 2.0 hrs. (8 TPUv3)   | [log](./scripts/logs/TIN200/20220224104514.log) |
+
+## ImageNet-1k_x32
+
+In summary,
+* Use 1,281,167 train examples, and 50,000 valid examples from 1000 classes.
+* Use train data augmentation consisting of random cropping with padding and random horizontal flipping.
+* Use SGD optimizer with Nesterov momentum 0.9, batch size 128, and base learning rate 0.01.
+* Use single-cycle cosine annealed learning rate schedule with a linear warm-up.
+
+### Train Models
+
+Run the following command lines to train models:
+```
+python scripts/train.py \
+    --config_file ./configs/ImageNet1k_x32_{NETWORK_NAME}.yaml \
+    --num_epochs 100 --num_warmup_epochs 5 \
+    --batch_size 128 --learning_rate 0.01 --weight_decay 5e-4 \
+    --seed 42 --output_dir ./outputs/ImageNet1k_x32_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/
+```
+
+### Evaluate Models
+
+Run the following command lines to evaluate models:
+```
+python scripts/eval.py \
+    --config_file ./configs/ImageNet1k_x32_{NETWORK_NAME}.yaml \
+    --weight_file ./outputs/ImageNet1k_x32_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/best_acc1
+```
+
+### Results
+
+| Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Train Runtime        | Misc. |
+| :-               | :-:                    | :-:                    | :-:                  | :-:   |
+| WRN28x10-BN-ReLU | 90.64 / 0.333 / 0.412  | 60.86 / 1.875 / 1.775  | 14.8 hrs. (8 TPUv2)  | [log](./scripts/logs/ImageNet1k_x32/20220317191255.log) |
+
+## ImageNet-1k_x64
+
+In summary,
+* Use 1,281,167 train examples, and 50,000 valid examples from 1000 classes.
+* Use train data augmentation consisting of random cropping with padding and random horizontal flipping.
+* Use SGD optimizer with Nesterov momentum 0.9, batch size 128, and base learning rate 0.01.
+* Use single-cycle cosine annealed learning rate schedule with a linear warm-up.
+
+### Train Models
+
+Run the following command lines to train models:
+```
+python scripts/train.py \
+    --config_file ./configs/ImageNet1k_x64_{NETWORK_NAME}.yaml \
+    --num_epochs 100 --num_warmup_epochs 5 \
+    --batch_size 128 --learning_rate 0.01 --weight_decay 5e-4 \
+    --seed 42 --output_dir ./outputs/ImageNet1k_x64_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/
+```
+
+### Evaluate Models
+
+Run the following command lines to evaluate models:
+```
+python scripts/eval.py \
+    --config_file ./configs/ImageNet1k_x64_{NETWORK_NAME}.yaml \
+    --weight_file ./outputs/ImageNet1k_x64_{NETWORK_NAME}/SGD/s42_e100_wd5e-4/best_acc1
+```
+
+### Results
+
+| Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Train Runtime        | Misc. |
+| :-               | :-:                    | :-:                    | :-:                  | :-:   |
+| R18-BN-ReLU      | 79.11 / 0.788 / 0.810  | 65.63 / 1.420 / 1.412  |  8.5 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k_x64/20220317134634.log) |
+| R34-BN-ReLU      | 89.55 / 0.368 / 0.419  | 68.85 / 1.332 / 1.286  | 10.9 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k_x64/20220317221604.log) |
+| R50-BN-ReLU      | 92.14 / 0.271 / 0.315  | 71.92 / 1.220 / 1.168  | 15.7 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k_x64/20220318091308.log) |
+| R101-BN-ReLU     | 94.38 / 0.188 / 0.240  | 72.46 / 1.237 / 1.158  | 21.6 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k_x64/20220319005752.log) |
+| R152-BN-ReLU     | 95.51 / 0.147 / 0.201  | 72.96 / 1.253 / 1.154  | 28.2 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k_x64/20220318192432.log) |
