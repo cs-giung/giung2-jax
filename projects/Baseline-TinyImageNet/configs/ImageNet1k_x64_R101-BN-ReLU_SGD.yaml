@@ -22,9 +22,9 @@ MODEL:
         USE_POOL_LAYER: False
         CONV_KSP: [3, 1, 1,]
         # POOL_KSP: [3, 2, 1,] (unused)
-      BLOCK: "BasicBlock"
+      BLOCK: "BottleneckBlock"
       SHORTCUT: "ProjectionShortcut"
-      NUM_BLOCKS: [2, 2, 2, 2,]
+      NUM_BLOCKS: [3, 4, 23, 3,]
       WIDEN_FACTOR: 1
       CONV_LAYERS: "Conv2d"
       NORM_LAYERS: "BatchNorm2d"
