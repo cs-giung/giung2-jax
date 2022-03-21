@@ -7,9 +7,9 @@ Here, we use the following architectures:
 
 Note that the original VGG architecture does not consider CIFAR datasets.
 Here, we have two modifications for our experiments using VGG architectures:
-1. We reduce the number of channels in the last FC layers from 4,096 to 512,
+1. We omit the last MLP structure,
     ```python
-    MODEL.BACKBONE.VGGNET.MLP_HIDDENS = [512, 512,] # [4096, 4096,]
+    MODEL.BACKBONE.VGGNET.MLP_HIDDENS = [] # [4096, 4096,]
     ```
 
 2. We also test VGG architectures with [Batch Normalization (Ioffe and Szegedy, 2015)](https://arxiv.org/abs/1502.03167) layers,
@@ -27,16 +27,7 @@ In summary,
 
 ### Train Models
 
-Run the following command lines to train VGGNet:
-```
-python scripts/train.py \
-    --config_file ./configs/{DATASET_NAME}_{NETWORK_NAME}.yaml \
-    --num_epochs 200 --num_warmup_epochs 5 \
-    --batch_size 128 --learning_rate 0.05 --weight_decay 5e-4 \
-    --seed 42 --output_dir ./outputs/{DATASET_NAME}_{NETWORK_NAME}/SGD/s42_e200_wd5e-4/
-```
-
-Run the following command lines to train ResNet and WideResNet:
+Run the following command lines to train models:
 ```
 python scripts/train.py \
     --config_file ./configs/{DATASET_NAME}_{NETWORK_NAME}.yaml \
@@ -58,14 +49,14 @@ python scripts/eval.py \
 
 | Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  | Train Runtime        | Misc. |
 | :-               | :-:                    | :-:                    | :-:                    | :-:                  | :-:   |
-| VGG11-ReLU       | 99.98 / 0.003 / 0.032  | 91.32 / 0.374 / 0.280  | 90.71 / 0.389 / 0.292  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220207164341.log) |
-| VGG11-BN-ReLU    | 100.0 / 0.001 / 0.016  | 92.26 / 0.322 / 0.259  | 92.18 / 0.318 / 0.261  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220207170644.log) |
-| VGG13-ReLU       | 99.99 / 0.002 / 0.026  | 93.04 / 0.320 / 0.231  | 92.32 / 0.344 / 0.246  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220207165353.log) |
-| VGG13-BN-ReLU    | 100.0 / 0.001 / 0.013  | 94.24 / 0.248 / 0.206  | 93.70 / 0.258 / 0.215  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220207171719.log) |
-| VGG16-ReLU       | 99.99 / 0.001 / 0.026  | 92.60 / 0.361 / 0.249  | 92.23 / 0.369 / 0.256  | 0.3 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220207155350.log) |
-| VGG16-BN-ReLU    | 100.0 / 0.001 / 0.019  | 94.38 / 0.275 / 0.214  | 93.50 / 0.312 / 0.240  | 0.4 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220207155424.log) |
-| VGG19-ReLU       | 99.99 / 0.001 / 0.025  | 92.62 / 0.386 / 0.246  | 92.65 / 0.387 / 0.252  | 0.4 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220207155333.log) |
-| VGG19-BN-ReLU    | 100.0 / 0.001 / 0.021  | 94.10 / 0.296 / 0.226  | 93.89 / 0.313 / 0.237  | 0.5 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220207155417.log) |
+| VGG11-ReLU       | 99.96 / 0.005 / 0.036  | 91.78 / 0.347 / 0.262  | 90.98 / 0.375 / 0.281  | 0.1 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220320100424.log) |
+| VGG13-ReLU       | 99.95 / 0.004 / 0.028  | 92.92 / 0.295 / 0.220  | 92.55 / 0.316 / 0.232  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220320100425.log) |
+| VGG16-ReLU       | 99.96 / 0.003 / 0.026  | 92.42 / 0.316 / 0.237  | 92.25 / 0.340 / 0.252  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220320100426.log) |
+| VGG19-ReLU       | -                      | -                      | -                      | -                    | - |
+| VGG11-BN-ReLU    | 100.0 / 0.001 / 0.017  | 92.60 / 0.302 / 0.247  | 92.25 / 0.311 / 0.257  | 0.1 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220320102408.log) |
+| VGG13-BN-ReLU    | 100.0 / 0.001 / 0.013  | 94.70 / 0.225 / 0.189  | 94.04 / 0.243 / 0.205  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220320102858.log) |
+| VGG16-BN-ReLU    | 100.0 / 0.001 / 0.020  | 94.30 / 0.272 / 0.215  | 93.93 / 0.282 / 0.223  | 0.3 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220320103354.log) |
+| VGG19-BN-ReLU    | 100.0 / 0.001 / 0.022  | 94.30 / 0.295 / 0.227  | 93.82 / 0.305 / 0.233  | 0.4 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220320103443.log) |
 | R20-BN-ReLU      | 99.91 / 0.008 / 0.029  | 92.90 / 0.255 / 0.218  | 92.49 / 0.277 / 0.235  | 0.1 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220205025405.log) |
 | R32-BN-ReLU      | 99.98 / 0.002 / 0.018  | 93.98 / 0.251 / 0.201  | 93.43 / 0.273 / 0.218  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220205024428.log) |
 | R32x2-BN-ReLU    | 100.0 / 0.000 / 0.012  | 95.00 / 0.220 / 0.173  | 94.86 / 0.210 / 0.171  | 0.4 hrs. (1 RTX3090) | [log](./scripts/logs/C10/20220222144259.log) |
@@ -88,14 +79,14 @@ python scripts/eval.py \
 
 | Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Test ACC / NLL / cNLL  | Train Runtime        | Misc. |
 | :-               | :-:                    | :-:                    | :-:                    | :-:                  | :-:   |
-| VGG11-ReLU       | 99.91 / 0.010 / 0.164  | 62.68 / 2.188 / 1.537  | 62.48 / 2.160 / 1.515  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220207164341.log) |
-| VGG11-BN-ReLU    | 99.98 / 0.004 / 0.020  | 69.44 / 1.276 / 1.217  | 69.54 / 1.274 / 1.216  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220207170634.log) |
-| VGG13-ReLU       | 99.94 / 0.005 / 0.124  | 67.80 / 2.030 / 1.327  | 67.44 / 2.005 / 1.320  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220207165349.log) |
-| VGG13-BN-ReLU    | 99.98 / 0.004 / 0.017  | 73.10 / 1.106 / 1.058  | 73.56 / 1.107 / 1.062  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220207171712.log) |
-| VGG16-ReLU       | 99.94 / 0.004 / 0.121  | 69.44 / 2.011 / 1.222  | 69.64 / 2.029 / 1.229  | 0.4 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220207155234.log) |
-| VGG16-BN-ReLU    | 99.98 / 0.002 / 0.055  | 73.26 / 1.382 / 1.120  | 73.45 / 1.337 / 1.098  | 0.4 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220207155312.log) |
-| VGG19-ReLU       | 99.91 / 0.004 / 0.126  | 69.90 / 2.273 / 1.248  | 69.53 / 2.273 / 1.253  | 0.4 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220207153836.log) |
-| VGG19-BN-ReLU    | 99.97 / 0.002 / 0.106  | 72.14 / 1.655 / 1.217  | 73.42 / 1.571 / 1.168  | 0.5 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220207155241.log) |
+| VGG11-ReLU       | 99.77 / 0.017 / 0.179  | 62.12 / 2.111 / 1.473  | 63.57 / 2.059 / 1.442  | 0.1 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220320101322.log) |
+| VGG13-ReLU       | 99.76 / 0.015 / 0.148  | 66.54 / 1.890 / 1.300  | 66.66 / 1.848 / 1.281  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220320101648.log) |
+| VGG16-ReLU       | 99.75 / 0.015 / 0.152  | 69.18 / 1.786 / 1.153  | 69.84 / 1.811 / 1.163  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220320101939.log) |
+| VGG19-ReLU       | 99.76 / 0.010 / 0.157  | 69.36 / 2.221 / 1.206  | 69.73 / 2.197 / 1.199  | 0.3 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220320102220.log) |
+| VGG11-BN-ReLU    | 99.98 / 0.005 / 0.010  | 70.74 / 1.199 / 1.187  | 70.57 / 1.186 / 1.176  | 0.1 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220320104214.log) |
+| VGG13-BN-ReLU    | 99.98 / 0.004 / 0.009  | 73.96 / 1.046 / 1.035  | 74.46 / 1.013 / 1.007  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220320104224.log) |
+| VGG16-BN-ReLU    | 99.98 / 0.002 / 0.028  | 74.06 / 1.211 / 1.064  | 74.59 / 1.184 / 1.050  | 0.3 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220320105044.log) |
+| VGG19-BN-ReLU    | 99.97 / 0.003 / 0.075  | 73.46 / 1.422 / 1.133  | 73.68 / 1.385 / 1.115  | 0.4 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220320105158.log) |
 | R20-BN-ReLU      | 92.43 / 0.271 / 0.383  | 68.08 / 1.220 / 1.129  | 68.19 / 1.228 / 1.138  | 0.1 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220205025405.log) |
 | R32-BN-ReLU      | 98.16 / 0.089 / 0.215  | 70.46 / 1.256 / 1.085  | 70.62 / 1.232 / 1.075  | 0.2 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220205024428.log) |
 | R32x2-BN-ReLU    | 99.98 / 0.005 / 0.033  | 74.66 / 1.095 / 0.985  | 75.04 / 1.076 / 0.970  | 0.4 hrs. (1 RTX3090) | [log](./scripts/logs/C100/20220222144259.log) |

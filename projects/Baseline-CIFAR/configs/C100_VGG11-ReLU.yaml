@@ -17,7 +17,7 @@ MODEL:
     VGGNET:
       DEPTH: 11
       IN_PLANES: 64
-      MLP_HIDDENS: [512, 512,]
+      MLP_HIDDENS: []
       CONV_LAYERS: "Conv2d"
       NORM_LAYERS: "NONE"
       ACTIVATIONS: "ReLU"

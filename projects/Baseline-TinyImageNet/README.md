@@ -107,6 +107,9 @@ python scripts/eval.py \
 
 | Network          | Train ACC / NLL / cNLL | Valid ACC / NLL / cNLL | Train Runtime        | Misc. |
 | :-               | :-:                    | :-:                    | :-:                  | :-:   |
+| R18-BN-ReLU      | 69.10 / 1.225 / 1.253  | 55.40 / 1.931 / 1.917  |  3.3 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k_x32/20220320074932.log) |
+| R34-BN-ReLU      | 78.50 / 0.807 / 0.861  | 59.28 / 1.783 / 1.742  |  4.5 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k_x32/20220320110925.log) |
+| R50-BN-ReLU      | 83.11 / 0.614 / 0.675  | 62.45 / 1.682 / 1.616  |  6.0 hrs. (8 TPUv3)  | [log](./scripts/logs/ImageNet1k_x32/20220320153708.log) |
 | WRN28x10-BN-ReLU | 90.64 / 0.333 / 0.412  | 60.86 / 1.875 / 1.775  | 14.8 hrs. (8 TPUv2)  | [log](./scripts/logs/ImageNet1k_x32/20220317191255.log) |
 
 ## ImageNet-1k_x64
