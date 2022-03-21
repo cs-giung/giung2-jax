@@ -1,0 +1,38 @@
+DATASETS:
+  NAME: "ImageNet1k_x32"
+  # SEED: 42 (unused)
+  DATA_AUGMENTATION: "STANDARD"
+  DOWNSAMPLED_IMAGENET:
+    SHUFFLE_INDICES: False
+    TRAIN_INDICES: [0, 1281167,]
+    VALID_INDICES: [1281167, 1281167,]
+
+MODEL:
+  META_ARCHITECTURE:
+    NAME: "ImageClassificationModelBase"
+  PIXEL_MEAN: [0.485, 0.456, 0.406,]
+  PIXEL_STD: [0.229, 0.224, 0.225,]
+  BACKBONE:
+    NAME: "ResNet"
+    RESNET:
+      IN_PLANES: 64
+      FIRST_BLOCK:
+        USE_NORM_LAYER: True
+        USE_ACTIVATION: True
+        USE_POOL_LAYER: False
+        CONV_KSP: [3, 1, 1,]
+        # POOL_KSP: [3, 2, 1,] (unused)
+      BLOCK: "BottleneckBlock"
+      SHORTCUT: "ProjectionShortcut"
+      NUM_BLOCKS: [3, 4, 6, 3,]
+      WIDEN_FACTOR: 1
+      CONV_LAYERS: "Conv2d"
+      NORM_LAYERS: "BatchNorm2d"
+      ACTIVATIONS: "ReLU"
+  CLASSIFIER:
+    NAME: "SoftmaxClassifier"
+    SOFTMAX_CLASSIFIER:
+      NUM_CLASSES: 1000
+      NUM_HEADS: 1
+      USE_BIAS: True
+      LINEAR_LAYERS: "Linear"
