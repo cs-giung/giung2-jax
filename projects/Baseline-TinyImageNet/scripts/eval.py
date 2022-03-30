@@ -8,14 +8,13 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # disable TF logs
 
 import jax
 import jax.numpy as jnp
-from jax.scipy.optimize import minimize
 from flax import jax_utils
 from flax.training import checkpoints
-from flax.training.common_utils import onehot
 
 from giung2.config import get_cfg
 from giung2.data.build import build_dataloaders
 from giung2.modeling.build import build_model
+from giung2.evaluation import get_optimal_temperature, temperature_scaling, evaluate_acc, evaluate_nll
 
 
 if __name__ == '__main__':
@@ -25,7 +24,7 @@ if __name__ == '__main__':
                         help='path to config file')
     parser.add_argument('--weight_file', default=None, required=True, metavar='FILE',
                         help='path to weight file')
-    parser.add_argument('--batch_size', default=100, type=int,
+    parser.add_argument('--batch_size', default=200, type=int,
                         help='number of examples per one mini-batch')
     parser.add_argument('opts', default=None, nargs=argparse.REMAINDER,
                         help='modify config options at the end of the command')
@@ -63,6 +62,9 @@ if __name__ == '__main__':
     im_dtype = jnp.float32
     var_dict = initialize_model(rng, model, image_shape, im_dtype)
 
+    # build dataset
+    dataloaders = build_dataloaders(cfg, batch_size=args.batch_size)
+
     # load pre-trained weights
     ckpt = checkpoints.restore_checkpoint(args.weight_file, target=None)
     var_dict = {
@@ -71,7 +73,7 @@ if __name__ == '__main__':
         'batch_stats': ckpt['batch_stats'],
     }
 
-    # define functions
+    # make predictions
     CPU = jax.devices("cpu")[0]
 
     def predict(var_dict, images):
@@ -80,41 +82,15 @@ if __name__ == '__main__':
 
     predict = jax.pmap(functools.partial(predict, var_dict), axis_name='batch')
 
-    def make_predictions(dataloader, desc, num_steps_per_epoch=None):
+    def make_predictions(dataloader, desc):
         true_labels, pred_lconfs = [], []
-        for batch_idx, batch in tqdm(enumerate(dataloader), desc=desc, leave=False):
+        for batch in tqdm(dataloader, desc=desc, leave=False):
             labels = jax.device_put(jnp.concatenate(        batch['labels'] ), CPU)
             lconfs = jax.device_put(jnp.concatenate(predict(batch['images'])), CPU)
             true_labels.append(labels)
             pred_lconfs.append(lconfs)
-            if (num_steps_per_epoch is not None
-                and batch_idx == num_steps_per_epoch):
-                break
         return jnp.concatenate(true_labels), jnp.concatenate(pred_lconfs)
 
-    @jax.jit
-    def evaluate_acc(log_confidences, true_labels):
-        return jnp.mean(jnp.argmax(log_confidences, axis=1) == true_labels)
-
-    @jax.jit
-    def evaluate_nll(log_confidences, true_labels):
-        return jnp.mean(-jnp.sum(log_confidences * onehot(true_labels, num_classes=log_confidences.shape[1]), axis=-1))
-
-    @jax.jit
-    def temperature_scaling(log_confidences, temperature):
-        return jax.nn.log_softmax(log_confidences / temperature, axis=-1)
-
-    @jax.jit
-    def get_optimal_temperature(log_confidences, true_labels):
-        def obj(t):
-            return evaluate_nll(temperature_scaling(log_confidences, t), true_labels)
-        optimal_temperature = minimize(obj, jnp.asarray([1.0,]), method='BFGS', tol=1e-3).x[0]
-        return optimal_temperature
-
-    # build dataset
-    dataloaders = build_dataloaders(cfg, batch_size=args.batch_size)
-
-    # make predictions
     trn_true_labels, trn_pred_lconfs = make_predictions(
         jax_utils.prefetch_to_device(dataloaders['trn_loader'](rng=None), size=2),
         'Make predictions on train examples')
