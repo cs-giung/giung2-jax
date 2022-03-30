@@ -8,14 +8,13 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # disable TF logs
 
 import jax
 import jax.numpy as jnp
-from jax.scipy.optimize import minimize
 from flax import jax_utils
 from flax.training import checkpoints
-from flax.training.common_utils import onehot
 
 from giung2.config import get_cfg
-from giung2.data.build import build_dataloaders
+from scripts.input_pipeline import build_imagenet_dataloader # from giung2.data.build import build_dataloaders
 from giung2.modeling.build import build_model
+from giung2.evaluation import get_optimal_temperature, temperature_scaling, evaluate_acc, evaluate_nll
 
 
 if __name__ == '__main__':
@@ -48,12 +47,18 @@ if __name__ == '__main__':
         var_dict = init({'params': key}, jnp.ones(im_shape, im_dtype))
         return var_dict
 
-    # Use ImageNet-1k dataset
-    image_shape = (1, 224, 224, 3,)
-    num_classes = 1000
+    if cfg.DATASETS.NAME in ['ImageNet1k',]:
+        image_shape = (1, 224, 224, 3,)
+        num_classes = 1000
+    else:
+        raise NotImplementedError
 
     im_dtype = jnp.float32
     var_dict = initialize_model(rng, model, image_shape, im_dtype)
+
+    # build dataset
+    dataloaders = build_imagenet_dataloader(batch_size=args.batch_size)
+    val_steps_per_epoch = dataloaders['val_steps_per_epoch']
 
     # load pre-trained weights
     ckpt = checkpoints.restore_checkpoint(args.weight_file, target=None)
@@ -63,7 +68,7 @@ if __name__ == '__main__':
         'batch_stats': ckpt['batch_stats'],
     }
 
-    # define functions
+    # make predictions
     CPU = jax.devices("cpu")[0]
 
     def predict(var_dict, images):
@@ -84,35 +89,10 @@ if __name__ == '__main__':
                 break
         return jnp.concatenate(true_labels), jnp.concatenate(pred_lconfs)
 
-    @jax.jit
-    def evaluate_acc(log_confidences, true_labels):
-        return jnp.mean(jnp.argmax(log_confidences, axis=1) == true_labels)
-
-    @jax.jit
-    def evaluate_nll(log_confidences, true_labels):
-        return jnp.mean(-jnp.sum(log_confidences * onehot(true_labels, num_classes=log_confidences.shape[1]), axis=-1))
-
-    @jax.jit
-    def temperature_scaling(log_confidences, temperature):
-        return jax.nn.log_softmax(log_confidences / temperature, axis=-1)
-
-    @jax.jit
-    def get_optimal_temperature(log_confidences, true_labels):
-        def obj(t):
-            return evaluate_nll(temperature_scaling(log_confidences, t), true_labels)
-        optimal_temperature = minimize(obj, jnp.asarray([1.0,]), method='BFGS', tol=1e-3).x[0]
-        return optimal_temperature
-
-    # build dataset
-    from scripts.input_pipeline import build_imagenet_dataloader
-    dataloaders = build_imagenet_dataloader(batch_size=args.batch_size)
-    val_steps_per_epoch = dataloaders['val_steps_per_epoch']
-
     # make predictions
     val_true_labels, val_pred_lconfs = make_predictions(
         jax_utils.prefetch_to_device(dataloaders['val_loader'](rng=None), size=2),
-        'Make predictions on valid examples',
-        val_steps_per_epoch)
+        'Make predictions on valid examples', val_steps_per_epoch)
 
     # evaluate predictions
     t_opt = get_optimal_temperature(val_pred_lconfs, val_true_labels)
