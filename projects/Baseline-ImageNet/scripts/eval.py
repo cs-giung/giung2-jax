@@ -24,7 +24,7 @@ if __name__ == '__main__':
                         help='path to config file')
     parser.add_argument('--weight_file', default=None, required=True, metavar='FILE',
                         help='path to weight file')
-    parser.add_argument('--batch_size', default=100, type=int,
+    parser.add_argument('--batch_size', default=200, type=int,
                         help='number of examples per one mini-batch')
     parser.add_argument('opts', default=None, nargs=argparse.REMAINDER,
                         help='modify config options at the end of the command')
