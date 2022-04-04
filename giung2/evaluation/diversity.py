@@ -5,6 +5,7 @@ import jax.numpy as jnp
 __all__ = [
     "compute_pairwise_kld",
     "compute_pairwise_agr",
+    "compute_pairwise_cka",
 ]
 
 
@@ -79,5 +80,45 @@ def compute_pairwise_agr(confidences, log_input=True, eps=1e-8, reduction="mean"
         return jnp.sum(jnp.ones(1)) if n_ensembles == 1 else (
             jnp.sum(jnp.mean(raw_results, axis=0)) - n_ensembles
         ) / (n_ensembles**2 - n_ensembles)
+    else:
+        raise NotImplementedError(f'Unknown reduction=\"{reduction}\"')
+
+
+def compute_pairwise_cka(output_vecs, reduction="mean"):
+    """
+    Args:
+        output_vecs (Array): An array with shape [N, M, K,].
+        reduction (str): Specifies the reduction to apply to the output.
+
+    Returns:
+        An array of pairwise centered kernel alignment (averaged over off-diagonal elements) with
+        shape [1,] when reduction in ["mean",], or raw pairwise centered kernel alignment values
+        with shape [M, M,] when reduction in ["none",].
+    """
+    n_datapoint = output_vecs.shape[0]
+    n_ensembles = output_vecs.shape[1]
+
+    raw_results = []
+    for idx in range(n_ensembles):
+        for jdx in range(n_ensembles):
+            identity_mat = jnp.diag(jnp.ones(n_datapoint))
+            centering_mat = identity_mat - jnp.ones((n_datapoint, n_datapoint)) / n_datapoint
+            x = output_vecs[:, idx, :]
+            y = output_vecs[:, jdx, :]
+            cov_xy = jnp.trace(
+                x @ jnp.transpose(x) @ centering_mat @ y @ jnp.transpose(y) @ centering_mat
+            )/ jnp.power(n_datapoint - 1, 2)
+            cov_xx = jnp.trace(
+                x @ jnp.transpose(x) @ centering_mat @ x @ jnp.transpose(x) @ centering_mat
+            )/ jnp.power(n_datapoint - 1, 2)
+            cov_yy = jnp.trace(
+                y @ jnp.transpose(y) @ centering_mat @ y @ jnp.transpose(y) @ centering_mat
+            )/ jnp.power(n_datapoint - 1, 2)
+            raw_results.append(cov_xy / jnp.sqrt(cov_xx * cov_yy))
+    raw_results = jnp.array(raw_results).reshape(n_ensembles, n_ensembles)
+    if reduction == "none":
+        return raw_results
+    elif reduction == "mean":
+        return jnp.sum(raw_results) / (n_ensembles**2 - n_ensembles)
     else:
         raise NotImplementedError(f'Unknown reduction=\"{reduction}\"')
