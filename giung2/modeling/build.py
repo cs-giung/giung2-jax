@@ -21,6 +21,8 @@ def build_backbone(cfg: CfgNode) -> nn.Module:
         backbone = build_resnet_backbone(cfg)
     elif name == 'PreResNet':
         backbone = build_preresnet_backbone(cfg)
+    elif name == 'ResNeXt':
+        backbone = build_resnext_backbone(cfg)
     elif name == 'VGGNet':
         backbone = build_vggnet_backbone(cfg)
     elif name == 'LeNet':
