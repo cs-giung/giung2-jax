@@ -93,6 +93,20 @@ def get_conv2d_layers(cfg, name, use_bias=False):
             use_bias = use_bias,
         )
 
+    if name == 'Conv2d_SpatialDropout':
+        return functools.partial(
+            Conv2d_SpatialDropout,
+            use_bias  = use_bias,
+            drop_rate = cfg.MODEL.DROPOUT.DROP_RATE,
+        )
+
+    if name == 'Conv2d_SpatialGaussianDropout':
+        return functools.partial(
+            Conv2d_SpatialGaussianDropout,
+            use_bias  = use_bias,
+            drop_rate = cfg.MODEL.DROPOUT.DROP_RATE,
+        )
+
     if name == 'Conv2d_BatchEnsemble':
 
         init_fn_name = cfg.MODEL.BATCH_ENSEMBLE.INITIALIZER.NAME
